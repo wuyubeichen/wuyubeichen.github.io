@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuyubeichen.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="协议：是定义一些规范(属性、功能方法)，然后由类、结构体或者枚举遵循并实现这些规范，这一过程被称为遵循了协议； 主要内容：  协议的基本语法 定义协议与实现协议 协议与构造器 协议作为类型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift学习10-协议">
+<meta property="og:url" content="https://wuyubeichen.github.io/2017/08/10/Swift%E5%AD%A6%E4%B9%A010-%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="梧雨北辰的博客">
+<meta property="og:description" content="协议：是定义一些规范(属性、功能方法)，然后由类、结构体或者枚举遵循并实现这些规范，这一过程被称为遵循了协议； 主要内容：  协议的基本语法 定义协议与实现协议 协议与构造器 协议作为类型">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-08-10T10:10:47.000Z">
+<meta property="article:modified_time" content="2025-05-03T16:26:03.882Z">
+<meta property="article:author" content="Zhou Shuai">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Swift">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wuyubeichen.github.io/2017/08/10/Swift%E5%AD%A6%E4%B9%A010-%E5%8D%8F%E8%AE%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Swift学习10-协议 | 梧雨北辰的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="梧雨北辰的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      
+      
+         
+    <a target="_blank" rel="noopener" href="https://github.com/wuyubeichen" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">梧雨北辰的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">天行健，君子以自强不息！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuyubeichen.github.io/2017/08/10/Swift%E5%AD%A6%E4%B9%A010-%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Zhou Shuai">
+      <meta itemprop="description" content="iOS Developer, Beijing China">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="梧雨北辰的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Swift学习10-协议
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-10 18:10:47" itemprop="dateCreated datePublished" datetime="2017-08-10T18:10:47+08:00">2017-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-04 00:26:03" itemprop="dateModified" datetime="2025-05-04T00:26:03+08:00">2025-05-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Swift/" itemprop="url" rel="index"><span itemprop="name">Swift</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>协议</strong>：是定义一些规范(属性、功能方法)，然后由类、结构体或者枚举遵循并实现这些规范，这一过程被称为遵循了协议；</p>
+<p><strong>主要内容：</strong></p>
+<ol>
+<li>协议的基本语法</li>
+<li>定义协议与实现协议</li>
+<li>协议与构造器</li>
+<li>协议作为类型<span id="more"></span></li>
+<li>协议实现委托代理模式</li>
+<li>通过扩展遵循协议</li>
+<li>协议类型的集合</li>
+<li>协议继承协议</li>
+<li>类类型专属协议</li>
+<li>协议合成</li>
+<li>检查协议的一致性</li>
+<li>协议的可选性</li>
+<li>协议扩展</li>
+</ol>
+<h4 id="一、协议的基本语法"><a href="#一、协议的基本语法" class="headerlink" title="一、协议的基本语法"></a>一、协议的基本语法</h4><p>下面是协议的一些基本语法：</p>
+<h5 id="1-定义一个协议"><a href="#1-定义一个协议" class="headerlink" title="1.定义一个协议"></a>1.定义一个协议</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protocol</span> <span class="title class_">SomeProtocol</span> &#123;</span><br><span class="line">    <span class="comment">//这里是协议的定义部分</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">AnotherProtocol</span>&#123;</span><br><span class="line">    <span class="comment">//这里是协议的定义部分</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-自定义类型遵循协议使用冒号，遵循多个协议时，各协议间使用逗号分隔"><a href="#2-自定义类型遵循协议使用冒号，遵循多个协议时，各协议间使用逗号分隔" class="headerlink" title="2.自定义类型遵循协议使用冒号，遵循多个协议时，各协议间使用逗号分隔"></a>2.自定义类型遵循协议使用冒号，遵循多个协议时，各协议间使用逗号分隔</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">SomeStructure</span>: <span class="title class_ inherited__">SomeProtocol</span>, <span class="title class_ inherited__">AnotherProtocol</span> &#123;</span><br><span class="line">    <span class="comment">//这里是结构体的定义部分</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-拥有父类的类在遵循协议时，需要将父类名放在协议名之前，以逗号分隔"><a href="#3-拥有父类的类在遵循协议时，需要将父类名放在协议名之前，以逗号分隔" class="headerlink" title="3.拥有父类的类在遵循协议时，需要将父类名放在协议名之前，以逗号分隔"></a>3.拥有父类的类在遵循协议时，需要将父类名放在协议名之前，以逗号分隔</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SomeClass</span>: <span class="title class_ inherited__">SomeSuperClass</span>, <span class="title class_ inherited__">SomeProtocol</span>, <span class="title class_ inherited__">AnotherProtocol</span> &#123;</span><br><span class="line">    <span class="comment">//这里是类的定义部分</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="二、定义协议与实现协议"><a href="#二、定义协议与实现协议" class="headerlink" title="二、定义协议与实现协议"></a>二、定义协议与实现协议</h4><p>协议可以要求遵循协议的类型提供特定的<strong>属性</strong>、<strong>方法</strong>，<strong>构造器</strong>。如果协议中的属性和方法没有实现，就会报错；除此之外，我们还需要注意一些具体的使用规则如下： <strong>属性要求：</strong></p>
+<ol>
+<li>协议可以定义实例属性和类型属性(使用static);</li>
+<li>协议不指定属性是存储属性还是计算型属性，只指定属性名称和类型以及读写性;</li>
+<li>协议指定属性的读取类型，使用的get和set，中间不能使用逗号；</li>
+<li>协议总是使用var关键字来声明变量属性;</li>
+<li>不能给协议属性设置默认值，因为默认值被看做是一种实现;</li>
+</ol>
+<p><strong>方法要求：</strong></p>
+<ol>
+<li>协议可以定义实例方法和类方法(使用static);</li>
+<li>协议定义函数时不能添加函数的实现，同时，传入的参数也不能使用默认参数；</li>
+<li>如果协议定义的实例方法会改变实例本身，需要在定义的方法名前使用mutating；这使得结构体和枚举能够遵循此协议并满足此方法要求。</li>
+</ol>
+<p>下面具体演示一个协议的使用：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protocol</span>  <span class="title class_">PersonProtocol</span>&#123;</span><br><span class="line">    <span class="comment">//1.定义属性</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> personCount: <span class="type">Int</span> &#123;<span class="keyword">get</span>&#125;</span><br><span class="line">    <span class="keyword">var</span> name:<span class="type">String</span>&#123;</span><br><span class="line">        <span class="keyword">get</span></span><br><span class="line">        <span class="keyword">set</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> nickName:<span class="type">String</span>&#123;<span class="keyword">get</span> <span class="keyword">set</span>&#125; <span class="comment">//要求可读可写，则该属性不能是常量属性或者只读的计算型属性</span></span><br><span class="line">    <span class="keyword">var</span> birthPlace:<span class="type">String</span>&#123;<span class="keyword">get</span>&#125;   <span class="comment">//只要求可读，若代码需要，实现时也是可写的</span></span><br><span class="line">    <span class="keyword">var</span> age:<span class="type">Int</span>&#123;<span class="keyword">get</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.定义函数</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">func</span> <span class="title function_">play</span>()</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">eat</span>(<span class="params">food</span>:<span class="type">String</span>)</span><br><span class="line">    <span class="comment">//func fed(food:string = &quot;defaultfood”) 错误，不能使用默认参数</span></span><br><span class="line">    <span class="keyword">mutating</span> <span class="keyword">func</span> <span class="title function_">changeNickName</span>(<span class="params">newName</span>:<span class="type">String</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Student</span>:<span class="title class_ inherited__">PersonProtocol</span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> personCount <span class="operator">=</span> <span class="number">0</span>        <span class="comment">//类属性</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">var</span> nickName: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>          <span class="comment">//这种形式的声明就代表可读可写</span></span><br><span class="line">    <span class="keyword">let</span> birthPlace: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;beijing&quot;</span> <span class="comment">//将只读属性设置为let，在合适位置给其设置默认值就好了</span></span><br><span class="line">    <span class="keyword">var</span> age:<span class="type">Int</span> <span class="operator">=</span> <span class="number">10</span></span><br><span class="line">    <span class="comment">//其实，只读类型的属性也可以设置为var,这相当于是对其进行扩展，不仅遵循了原来的get，还增加了set</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">func</span> <span class="title function_">play</span>() &#123;</span><br><span class="line">        <span class="comment">//类方法</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">eat</span>(<span class="params">food</span>: <span class="type">String</span>) &#123;</span><br><span class="line">        <span class="comment">//普通实例方法</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">mutating</span> <span class="keyword">func</span> <span class="title function_">changeNickName</span>(<span class="params">newName</span>: <span class="type">String</span>) &#123;</span><br><span class="line">        <span class="comment">//实例方法中修改了实例属性</span></span><br><span class="line">        <span class="keyword">self</span>.nickName <span class="operator">=</span> newName</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//测试代码：</span></span><br><span class="line"><span class="keyword">var</span> student:<span class="type">Student</span> <span class="operator">=</span> <span class="type">Student</span>()</span><br><span class="line">student.age <span class="operator">=</span> <span class="number">18</span></span><br><span class="line"><span class="keyword">var</span> stu:<span class="type">PersonProtocol</span> <span class="operator">=</span> student <span class="comment">//这里协议也当做了一种类型来使用，但是具体的实现还是是Dog完成的</span></span><br><span class="line"><span class="comment">//stu.age = 10 //这里报错，因为协议中的age是只读的</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：实现协议中的 mutating 方法时，若是类类型，则不用写 mutating 关键字。而对于结构体和枚举，则必须写 mutating 关键字。</strong></p>
+<h4 id="三、协议与构造器"><a href="#三、协议与构造器" class="headerlink" title="三、协议与构造器"></a>三、协议与构造器</h4><p>这里主要总结协议在定义构造器时候的一些要求，主要有如下几个方面：</p>
+<ol>
+<li>协议中可设置指定或者便利构造器,实现时都需要添加<code>required</code>修饰符,因为这样可以确保所有子类也必须提供此构造器，从而符合协议，但是如果为<code>final</code>类，就不需要；</li>
+<li>如果一个子类重写了父类的指定构造器，并且该构造器满足了某个协议的要求，那么该构造器的实现需要同时标注 <code>required</code> 和 <code>override</code> 修饰符；</li>
+<li>协议中可定义可失败构造器(<code>init?</code>)、非可失败构造器(<code>init</code>)、隐式解包可失败构造器(<code>init!</code>)；</li>
+</ol>
+<p>下面是协议与构造器使用的相关示例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protocol</span> <span class="title class_">Protocol</span> &#123;</span><br><span class="line">    <span class="keyword">init</span>()</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SomeSuperClass</span> &#123;</span><br><span class="line">    <span class="keyword">init</span>() &#123;</span><br><span class="line">        <span class="comment">// 这里是构造器的实现部分</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SomeSubClass</span>: <span class="title class_ inherited__">SomeSuperClass</span>, <span class="title class_ inherited__">SomeProtocol</span> &#123;</span><br><span class="line">    <span class="comment">// 因为遵循协议，需要加上 required</span></span><br><span class="line">    <span class="comment">// 因为继承自父类，需要加上 override</span></span><br><span class="line">    <span class="keyword">required</span> <span class="keyword">override</span> <span class="keyword">init</span>() &#123;</span><br><span class="line">        <span class="comment">// 这里是构造器的实现部分</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="四、协议作为类型"><a href="#四、协议作为类型" class="headerlink" title="四、协议作为类型"></a>四、协议作为类型</h4><p>协议虽本身并未实现任何功能，但是仍然可以像其他普通类型一样使用,如<code>Int</code>、<code>Double</code>等。协议作为类型使用的场景如下：</p>
+<ol>
+<li>作为函数、方法或构造器中的参数类型或返回值类型</li>
+<li>作为常量、变量或属性的类型</li>
+<li>作为数组、字典或其他容器中的元素类型</li>
+</ol>
+<p>下面演示协议类型的使用：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//协议：定义了生成随机数方法</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">RandomNumberGenerator</span> &#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">random</span>() -&gt; <span class="type">Double</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//实现了RandomNumberGenerator协议的类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LinearCongruentialGenerator</span>: <span class="title class_ inherited__">RandomNumberGenerator</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> lastRandom <span class="operator">=</span> <span class="number">42.0</span></span><br><span class="line">    <span class="keyword">let</span> m <span class="operator">=</span> <span class="number">139968.0</span></span><br><span class="line">    <span class="keyword">let</span> a <span class="operator">=</span> <span class="number">3877.0</span></span><br><span class="line">    <span class="keyword">let</span> c <span class="operator">=</span> <span class="number">29573.0</span></span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">random</span>() -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">        <span class="comment">//使用truncatingRemainder方法进行浮点数取余</span></span><br><span class="line">        lastRandom <span class="operator">=</span> (lastRandom <span class="operator">*</span> a <span class="operator">+</span> c).truncatingRemainder(dividingBy: m)</span><br><span class="line">        <span class="keyword">return</span> lastRandom <span class="operator">/</span> m</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Dice的generator属性，其类型是RandomNumberGenerator协议类型</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Dice</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> sides: <span class="type">Int</span></span><br><span class="line">    <span class="keyword">let</span> generator: <span class="type">RandomNumberGenerator</span>    <span class="comment">//协议作为属性</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//协议作为参数类型</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">sides</span>: <span class="type">Int</span>, <span class="params">generator</span>: <span class="type">RandomNumberGenerator</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.sides <span class="operator">=</span> sides</span><br><span class="line">        <span class="keyword">self</span>.generator <span class="operator">=</span> generator</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">roll</span>() -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="type">Int</span>(generator.random() <span class="operator">*</span> <span class="type">Double</span>(sides)) <span class="operator">+</span> <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> d6 <span class="operator">=</span> <span class="type">Dice</span>(sides: <span class="number">6</span>, generator: <span class="type">LinearCongruentialGenerator</span>())</span><br><span class="line"><span class="keyword">for</span> <span class="keyword">_</span> <span class="keyword">in</span> <span class="number">1</span><span class="operator">...</span><span class="number">5</span> &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Random dice roll is <span class="subst">\(d6.roll())</span>&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Random dice roll is 3</span></span><br><span class="line"><span class="comment">//Random dice roll is 5</span></span><br><span class="line"><span class="comment">//Random dice roll is 4</span></span><br><span class="line"><span class="comment">//Random dice roll is 5</span></span><br><span class="line"><span class="comment">//Random dice roll is 4</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="五、协议实现委托代理模式"><a href="#五、协议实现委托代理模式" class="headerlink" title="五、协议实现委托代理模式"></a>五、协议实现委托代理模式</h4><p>委托是一种设计模式，它允许类或结构体将一些需要它们负责的功能委托给其他类型的实例。</p>
+<p>委托模式：</p>
+<ul>
+<li>作用：用来响应特定的动作，或者接收外部数据源提供的数据，而无需关心外部数据源的类型；</li>
+<li>原理：定义协议来封装那些需要被委托的功能，这样就能确保遵循协议的类型能提供这些功能；</li>
+</ul>
+<p>下面例子演示了通过协议实现代理模式：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//播放音乐的协议</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">PlayMusicTools</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">playMusic</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实现协议的类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">QQMusisApp</span>:<span class="title class_ inherited__">PlayMusicTools</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">playMusic</span>() &#123;</span><br><span class="line">        <span class="built_in">print</span>(“播放一首美妙的音乐<span class="string">&quot;)</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">class Person&#123;</span></span><br><span class="line"><span class="string">    var delegate:PlayMusicTools?</span></span><br><span class="line"><span class="string">    func listenMusic()&#123;</span></span><br><span class="line"><span class="string">        self.delegate?.playMusic()</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">//人想听音乐但是又不能自己播放，就调用了代理的方法</span></span><br><span class="line"><span class="string">let person:Person = Person()</span></span><br><span class="line"><span class="string">person.delegate = QQMusisApp()</span></span><br><span class="line"><span class="string">person.listenMusic()</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="六、通过扩展遵循协议"><a href="#六、通过扩展遵循协议" class="headerlink" title="六、通过扩展遵循协议"></a>六、通过扩展遵循协议</h4><p>我们知道，扩展可以为已有类型添加属性、方法、下标以及构造器。同样道理，我们也可以通过扩展为已有类型实现需要遵循的协议，通过这种方法与在原始定义中遵循并实现协议效果完全相同。</p>
+<h5 id="6-1-通过扩展实现协议"><a href="#6-1-通过扩展实现协议" class="headerlink" title="6.1.通过扩展实现协议"></a>6.1.通过扩展实现协议</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//协议：定义一个可以打印UIView属性fame的方法</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">ViewProperty</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">printFrame</span>()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过扩展为UIView实现了ViewProperty协议</span></span><br><span class="line"><span class="keyword">extension</span> <span class="title class_">UIView</span>:<span class="title class_ inherited__">ViewProperty</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">printFrame</span>() &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="keyword">self</span>.frame)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> view <span class="operator">=</span> <span class="type">UIView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">100</span>, height: <span class="number">100</span>))</span><br><span class="line">view.printFrame()</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-2-已经符合协议的类"><a href="#6-2-已经符合协议的类" class="headerlink" title="6.2.已经符合协议的类"></a>6.2.已经符合协议的类</h5><p>如果一个类型已经符合了某个协议的所有要求，却还没有声明遵循这个协议，那么可以通过空扩展来遵循协议。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CustomObject</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">printFrame</span>() &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;this is not a view，cant print frame&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//空扩展表示遵循协议</span></span><br><span class="line"><span class="keyword">extension</span> <span class="title class_">CustomObject</span>:<span class="title class_ inherited__">ViewProperty</span>&#123;&#125;</span><br><span class="line"><span class="comment">//遵循了协议之后，就可以使用协议作为类型</span></span><br><span class="line"><span class="keyword">let</span> customOject:<span class="type">ViewProperty</span> <span class="operator">=</span> <span class="type">CustomObject</span>()</span><br><span class="line">customOject.printFrame()</span><br></pre></td></tr></table></figure>
+
+<h4 id="七、协议类型的集合"><a href="#七、协议类型的集合" class="headerlink" title="七、协议类型的集合"></a>七、协议类型的集合</h4><p>协议类型可以在数组或者字典这样的集合中使用；如下，等号左边的数组表示遵循了<code>ViewProperty</code>协议的对象构成的数组。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> things:[<span class="type">ViewProperty</span>] <span class="operator">=</span> [view,customOject]</span><br><span class="line"><span class="keyword">for</span> thing <span class="keyword">in</span> things&#123;</span><br><span class="line">    thing.printFrame()</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//打印结果：</span></span><br><span class="line"><span class="comment">//(0.0, 0.0, 100.0, 100.0)</span></span><br><span class="line"><span class="comment">//this is not a view，cant print frame</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="八、协议继承协议"><a href="#八、协议继承协议" class="headerlink" title="八、协议继承协议"></a>八、协议继承协议</h4><p>协议继承协议具有以下特点：</p>
+<ol>
+<li>协议能够继承一个或多个其他协议，可以在继承的协议的基础上增加新的要求。</li>
+<li>协议的继承语法与类的继承相似，多个被继承的协议间用逗号分隔：</li>
+<li>所有遵循新协议的类型，也同时满足新协议所继承的父协议</li>
+</ol>
+<p>协议继承协议的格式如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protocol</span> <span class="title class_">InheritingProtocol</span>: <span class="title class_ inherited__">SomeProtocol</span>, <span class="title class_ inherited__">AnotherProtocol</span> &#123;</span><br><span class="line">    <span class="comment">// 这里是协议的定义部分</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="九、类类型专属协议"><a href="#九、类类型专属协议" class="headerlink" title="九、类类型专属协议"></a>九、类类型专属协议</h4><p>协议的继承列表中，通过添加 <code>class</code> 关键字来限制协议只能被类类型遵循，而结构体或枚举不能遵循该协议。<code>class</code> 关键字必须第一个出现在协议的继承列表中，在其他继承的协议之前。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protocol</span> <span class="title class_">SomeClassOnlyProtocol</span>: <span class="keyword">class</span>, <span class="title class_ inherited__">SomeInheritedProtocol</span> &#123;</span><br><span class="line">    <span class="comment">// 这里是类类型专属协议的定义部分</span></span><br><span class="line">    <span class="comment">//class 关键字必须第一个出现在协议的继承列表中，在其他继承的协议之前</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="十、协议合成"><a href="#十、协议合成" class="headerlink" title="十、协议合成"></a>十、协议合成</h4><p>有时候需要同时遵循多个协议，你可以将多个协议采用<code>SomeProtocol &amp; AnotherProtocol</code>这样的格式进行组合，称为协议合成(<code>protocol composition</code>)；你可以罗列任意多个你想要遵循的协议，以与符号(<code>&amp;</code>)分隔。</p>
+<p>下面的例子中，将 <code>Named</code> 和 <code>Aged</code> 两个协议按照上述语法组合成一个协议，作为函数参数的类型：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protocol</span> <span class="title class_">Named</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">Aged</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> age: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Person遵循两个协议</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Person</span>: <span class="title class_ inherited__">Named</span>, <span class="title class_ inherited__">Aged</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> age: <span class="type">Int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//函数参数celebrator的类型为 Name &amp; Aged；</span></span><br><span class="line"><span class="comment">//这意味着它不关心参数的具体类型，只要参数符合这两个协议即可；</span></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">wishHappyBirthday</span>(<span class="params">to</span> <span class="params">celebrator</span>: <span class="type">Named</span> &amp; <span class="type">Aged</span>) &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Happy birthday, <span class="subst">\(celebrator.name)</span>, you&#x27;re <span class="subst">\(celebrator.age)</span>!&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> birthdayPerson <span class="operator">=</span> <span class="type">Person</span>(name: <span class="string">&quot;Malcolm&quot;</span>, age: <span class="number">21</span>)</span><br><span class="line">wishHappyBirthday(to: birthdayPerson)      <span class="comment">//打印 “Happy birthday Malcolm - you&#x27;re 21!”</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：协议合成并不会生成新的、永久的协议类型，而是将多个协议中的要求合成到一个只在局部作用域有效的临时协议中</strong></p>
+<h4 id="十一、检查协议的一致性"><a href="#十一、检查协议的一致性" class="headerlink" title="十一、检查协议的一致性"></a>十一、检查协议的一致性</h4><p>类型转换中描述的is和as操作符同样可以用来检查协议一致性，即是否符合某协议，并且可以转换到指定的协议类型。检查和转换到某个协议类型在语法上和类型的检查和转换完全相同：</p>
+<ul>
+<li><strong>is</strong>：用来检查实例是否符合某个协议，若符合则返回 true，否则返回 false。</li>
+<li><strong>as?</strong>： 返回一个可选值，当实例符合某个协议时，返回类型为协议类型的可选值，否则返回 nil。</li>
+<li><strong>as!</strong>：将实例强制向下转换到某个协议类型，如果强转失败，会引发运行时错误。</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义协议：定义一个Double类型的可读属性area</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">HasArea</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> area: <span class="type">Double</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Circle类和Country类遵循协议HasArea</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Circle</span>: <span class="title class_ inherited__">HasArea</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> pi <span class="operator">=</span> <span class="number">3.1415927</span></span><br><span class="line">    <span class="keyword">var</span> radius: <span class="type">Double</span></span><br><span class="line">    <span class="keyword">var</span> area: <span class="type">Double</span> &#123; <span class="keyword">return</span> pi <span class="operator">*</span> radius <span class="operator">*</span> radius &#125; <span class="comment">//计算型</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">radius</span>: <span class="type">Double</span>) &#123; <span class="keyword">self</span>.radius <span class="operator">=</span> radius &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Country</span>: <span class="title class_ inherited__">HasArea</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> area: <span class="type">Double</span> <span class="comment">//存储型</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">area</span>: <span class="type">Double</span>) &#123; <span class="keyword">self</span>.area <span class="operator">=</span> area &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Animal未遵循协议</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> legs: <span class="type">Int</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">legs</span>: <span class="type">Int</span>) &#123; <span class="keyword">self</span>.legs <span class="operator">=</span> legs &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> objects: [<span class="type">AnyObject</span>] <span class="operator">=</span> [</span><br><span class="line">    <span class="type">Circle</span>(radius: <span class="number">2.0</span>),</span><br><span class="line">    <span class="type">Country</span>(area: <span class="number">243_610</span>),</span><br><span class="line">    <span class="type">Animal</span>(legs: <span class="number">4</span>)</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment">//迭代测试，并检测协议</span></span><br><span class="line"><span class="keyword">for</span> object <span class="keyword">in</span> objects &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> objectWithArea <span class="operator">=</span> object <span class="keyword">as?</span> <span class="type">HasArea</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Area is <span class="subst">\(objectWithArea.area)</span>&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Something that doesn&#x27;t have an area&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Area is 12.5663708</span></span><br><span class="line"><span class="comment">// Area is 243610.0</span></span><br><span class="line"><span class="comment">// Something that doesn&#x27;t have an area”</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="十二、协议的可选性"><a href="#十二、协议的可选性" class="headerlink" title="十二、协议的可选性"></a>十二、协议的可选性</h4><p><strong>协议可以定义可选要求，即遵循协议的类型可以选择是否实现这些要求。</strong></p>
+<ol>
+<li>在协议中使用<code>optional</code>关键字作为前缀来定义可选要求。</li>
+<li>可选要求用在你需要和<code>Objective-C</code>打交道的代码中。协议和可选要求都必须带上<code>@objc</code>属性。</li>
+<li>标记<code>@objc</code>特性的协议只能被继承自<code>Objective-C</code>类的类或者<code>@objc</code>类遵循，其他类以及结构体和枚举均不能遵循这种协议；</li>
+<li>协议中的可选要求可通过可选链式调用来使用，因为遵循协议的类型可能没有实现这些可选要求；</li>
+</ol>
+<p>下面的例子定义了一个名为<code>Counter</code>的用于整数计数的类，它使用外部的数据源来提供每次的增量。数据源由<code>CounterDataSource</code>协议定义，包含两个可选要求：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.协议CounterDataSource包含两个可选要求</span></span><br><span class="line"><span class="keyword">@objc</span> <span class="keyword">protocol</span> <span class="title class_">CounterDataSource</span> &#123;</span><br><span class="line">    <span class="keyword">@objc</span> <span class="keyword">optional</span> <span class="keyword">func</span> <span class="title function_">incrementForCount</span>(<span class="params">count</span>: <span class="type">Int</span>) -&gt; <span class="type">Int</span></span><br><span class="line">    <span class="keyword">@objc</span> <span class="keyword">optional</span> <span class="keyword">var</span> fixedIncrement: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//2.Counter类含有CounterDataSource?类型的可选属性dataSource</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Counter</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> count <span class="operator">=</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">var</span> dataSource: <span class="type">CounterDataSource</span>?</span><br><span class="line"></span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">increment</span>() &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> amount <span class="operator">=</span> dataSource<span class="operator">?</span>.incrementForCount<span class="operator">?</span>(count: count) &#123;</span><br><span class="line">            count <span class="operator">+=</span> amount</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">let</span> amount <span class="operator">=</span> dataSource<span class="operator">?</span>.fixedIncrement &#123;</span><br><span class="line">             <span class="comment">//通过可选链调用，每次使用的是fixedIncrement的3</span></span><br><span class="line">            count <span class="operator">+=</span> amount</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//3.ThreeSource类遵循了CounterDataSource协议</span></span><br><span class="line"><span class="comment">//它实现了可选属性fixedIncrement，而并未实现incrementForCount方法</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ThreeSource</span>: <span class="title class_ inherited__">NSObject</span>, <span class="title class_ inherited__">CounterDataSource</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> fixedIncrement <span class="operator">=</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//4.使用ThreeSource实例作为Counter实例的数据源对象</span></span><br><span class="line"><span class="keyword">var</span> counter <span class="operator">=</span> <span class="type">Counter</span>()</span><br><span class="line">counter.dataSource <span class="operator">=</span> <span class="type">ThreeSource</span>()</span><br><span class="line"><span class="keyword">for</span> <span class="keyword">_</span> <span class="keyword">in</span> <span class="number">1</span><span class="operator">...</span><span class="number">4</span> &#123;</span><br><span class="line">    counter.increment()</span><br><span class="line">    <span class="built_in">print</span>(counter.count)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//测试结果：</span></span><br><span class="line"><span class="comment">//3</span></span><br><span class="line"><span class="comment">//6</span></span><br><span class="line"><span class="comment">//9</span></span><br><span class="line"><span class="comment">//12</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：严格来讲，<code>CounterDataSource</code>协议中的方法和属性都是可选的，因此遵循协议的类可以不实现这些要求，尽管技术上允许这样做，不过最好不要这样写；</p>
+<h4 id="十三、协议扩展"><a href="#十三、协议扩展" class="headerlink" title="十三、协议扩展"></a>十三、协议扩展</h4><p>协议可以通过扩展来为遵循协议的类型提供属性、方法以及下标的实现。通过这种方式，你可以基于协议本身来实现这些功能，而无需在每个遵循协议的类型中都重复同样的实现，也无需使用全局函数。</p>
+<p>下面的代码演示了协议扩展的用法：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//协议：定义random函数生成随机数方法</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">RandomNumProtocol</span> &#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">random</span>() -&gt; <span class="type">Double</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//扩展RandomNumProtocol协议，增加了randomBool方法</span></span><br><span class="line"><span class="comment">//注意：通过协议扩展，所有遵循协议的类型都能自动获得这个扩展所增加的方法实现，无需任何额外修改</span></span><br><span class="line"><span class="keyword">extension</span> <span class="title class_">RandomNumProtocol</span> &#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">randomBool</span>() -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> random() <span class="operator">&gt;</span> <span class="number">0.5</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//遵循协议的类：一个实现了RandomNumProtocol协议的类</span></span><br><span class="line"><span class="comment">//RandomNum类只实现了协议方法random()，但是同样可以使用协议扩展里的方法randomBool()</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RandomNum</span>: <span class="title class_ inherited__">RandomNumProtocol</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> lastRandom <span class="operator">=</span> <span class="number">42.0</span></span><br><span class="line">    <span class="keyword">let</span> m <span class="operator">=</span> <span class="number">139968.0</span></span><br><span class="line">    <span class="keyword">let</span> a <span class="operator">=</span> <span class="number">3877.0</span></span><br><span class="line">    <span class="keyword">let</span> c <span class="operator">=</span> <span class="number">29573.0</span></span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">random</span>() -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">        <span class="comment">//使用truncatingRemainder方法进行浮点数取余</span></span><br><span class="line">        lastRandom <span class="operator">=</span> (lastRandom <span class="operator">*</span> a <span class="operator">+</span> c).truncatingRemainder(dividingBy: m)</span><br><span class="line">        <span class="keyword">return</span> lastRandom <span class="operator">/</span> m</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//测试代码：</span></span><br><span class="line"><span class="keyword">let</span> generator <span class="operator">=</span> <span class="type">RandomNum</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Here&#x27;s a random number: <span class="subst">\(generator.random())</span>&quot;</span>)</span><br><span class="line"><span class="comment">//打印：Here&#x27;s a random number: 0.37464991998171</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;And here&#x27;s a random Boolean: <span class="subst">\(generator.randomBool())</span>&quot;</span>)</span><br><span class="line"><span class="comment">//打印：And here&#x27;s a random Boolean: true</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="13-1-提供默认实现"><a href="#13-1-提供默认实现" class="headerlink" title="13.1.提供默认实现"></a>13.1.提供默认实现</h5><p>可以通过协议扩展来为协议要求的属性、方法以及下标提供默认的实现。但是，如果遵循协议的类型也为这些要求提供了自己的实现，那么这些自定义实现将会替代扩展中的默认实现被使用。</p>
+<p>注意：通过协议扩展为协议要求提供的默认实现，这和可选的协议要求不同；虽然在这两种情况下，遵循协议的类型都无需自己实现这些要求，但是通过扩展提供的默认实现可以直接调用，而无需使用可选链式调用。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//协议：一个宠物协议，定义发出声音的方法makeSound</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">PetProtocol</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">makeSound</span>()</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//扩展协议：提供默认方法实现</span></span><br><span class="line"><span class="keyword">extension</span> <span class="title class_">PetProtocol</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">makeSound</span>()&#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;aaaaaa。。。。&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Cat</span>:<span class="title class_ inherited__">PetProtocol</span>&#123;</span><br><span class="line">     <span class="comment">//因为有协议扩展，已经提供了默认的方法实现；所以这里只遵循了协议</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Dog</span>:<span class="title class_ inherited__">PetProtocol</span>&#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">makeSound</span>() &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;汪汪汪。。。。&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//测试代码：</span></span><br><span class="line"><span class="keyword">let</span> cat <span class="operator">=</span> <span class="type">Cat</span>();</span><br><span class="line">cat.makeSound();  <span class="comment">//打印：aaaaaa。。。。</span></span><br><span class="line"><span class="keyword">let</span> dog <span class="operator">=</span> <span class="type">Dog</span>();</span><br><span class="line">dog.makeSound()   <span class="comment">//打印：汪汪汪。。。。</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="13-2-为协议扩展添加限制条件"><a href="#13-2-为协议扩展添加限制条件" class="headerlink" title="13.2.为协议扩展添加限制条件"></a>13.2.为协议扩展添加限制条件</h5><p>在扩展协议的时候，可以指定一些限制条件，只有遵循协议的类型满足这些限制条件时，才能获得协议扩展提供的默认实现。这些限制条件写在协议名之后，使用 <code>where</code>子句来描述 例如:你可以扩展<code>Collection</code>协议，通过限制集合元素遵循<code>Equatable</code> 协议， 作为标准库的一部分，你可以使用&#x3D;&#x3D;和!&#x3D;操作符来检查两个元素的等价性和非等价性；</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extension</span> <span class="title class_">Collection</span> <span class="keyword">where</span> <span class="type">Element</span>: <span class="type">Equatable</span> &#123;</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">allEqual</span>() -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> element <span class="keyword">in</span> <span class="keyword">self</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> element <span class="operator">!=</span> <span class="keyword">self</span>.first &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果集合中的所有元素都一致，allEqual()方法才返回 true</span></span><br><span class="line"><span class="keyword">let</span> equalNumbers <span class="operator">=</span> [<span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>]</span><br><span class="line"><span class="built_in">print</span>(equalNumbers.allEqual())      <span class="comment">//打印 &quot;true&quot;</span></span><br><span class="line"><span class="keyword">let</span> differentNumbers <span class="operator">=</span> [<span class="number">100</span>, <span class="number">100</span>, <span class="number">200</span>, <span class="number">100</span>, <span class="number">200</span>]</span><br><span class="line"><span class="built_in">print</span>(differentNumbers.allEqual())  <span class="comment">//打印 &quot;false&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：<strong>如果多个协议扩展都为同一个协议要求提供了默认实现，而遵循协议的类型又同时满足这些协议扩展的限制条件，那么将会使用限制条件最多的那个协议扩展提供的默认实现。</strong></p>
+
+    </div>
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Zhou Shuai
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wuyubeichen.github.io/2017/08/10/Swift%E5%AD%A6%E4%B9%A010-%E5%8D%8F%E8%AE%AE/" title="Swift学习10-协议">https://wuyubeichen.github.io/2017/08/10/Swift学习10-协议/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Swift/" rel="tag"># Swift</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/09/Swift%E5%AD%A6%E4%B9%A009-%E6%89%A9%E5%B1%95/" rel="prev" title="Swift学习09-扩展">
+      <i class="fa fa-chevron-left"></i> Swift学习09-扩展
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/02/13/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99Github%E3%80%81Hexo%E4%B8%8ENext/" rel="next" title="搭建个人博客网站Github、Hexo与Next">
+      搭建个人博客网站Github、Hexo与Next <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">一、协议的基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.1.</span> <span class="nav-text">1.定义一个协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E9%81%B5%E5%BE%AA%E5%8D%8F%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%86%92%E5%8F%B7%EF%BC%8C%E9%81%B5%E5%BE%AA%E5%A4%9A%E4%B8%AA%E5%8D%8F%E8%AE%AE%E6%97%B6%EF%BC%8C%E5%90%84%E5%8D%8F%E8%AE%AE%E9%97%B4%E4%BD%BF%E7%94%A8%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94"><span class="nav-number">1.2.</span> <span class="nav-text">2.自定义类型遵循协议使用冒号，遵循多个协议时，各协议间使用逗号分隔</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%8B%A5%E6%9C%89%E7%88%B6%E7%B1%BB%E7%9A%84%E7%B1%BB%E5%9C%A8%E9%81%B5%E5%BE%AA%E5%8D%8F%E8%AE%AE%E6%97%B6%EF%BC%8C%E9%9C%80%E8%A6%81%E5%B0%86%E7%88%B6%E7%B1%BB%E5%90%8D%E6%94%BE%E5%9C%A8%E5%8D%8F%E8%AE%AE%E5%90%8D%E4%B9%8B%E5%89%8D%EF%BC%8C%E4%BB%A5%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94"><span class="nav-number">1.3.</span> <span class="nav-text">3.拥有父类的类在遵循协议时，需要将父类名放在协议名之前，以逗号分隔</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9A%E4%B9%89%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%AE%9E%E7%8E%B0%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.</span> <span class="nav-text">二、定义协议与实现协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%9E%84%E9%80%A0%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">三、协议与构造器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%8D%8F%E8%AE%AE%E4%BD%9C%E4%B8%BA%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">四、协议作为类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E5%A7%94%E6%89%98%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">五、协议实现委托代理模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E9%80%9A%E8%BF%87%E6%89%A9%E5%B1%95%E9%81%B5%E5%BE%AA%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.</span> <span class="nav-text">六、通过扩展遵循协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#6-1-%E9%80%9A%E8%BF%87%E6%89%A9%E5%B1%95%E5%AE%9E%E7%8E%B0%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.1.</span> <span class="nav-text">6.1.通过扩展实现协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-2-%E5%B7%B2%E7%BB%8F%E7%AC%A6%E5%90%88%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%B1%BB"><span class="nav-number">6.2.</span> <span class="nav-text">6.2.已经符合协议的类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%8D%8F%E8%AE%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E9%9B%86%E5%90%88"><span class="nav-number">7.</span> <span class="nav-text">七、协议类型的集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E5%8D%8F%E8%AE%AE%E7%BB%A7%E6%89%BF%E5%8D%8F%E8%AE%AE"><span class="nav-number">8.</span> <span class="nav-text">八、协议继承协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E7%B1%BB%E7%B1%BB%E5%9E%8B%E4%B8%93%E5%B1%9E%E5%8D%8F%E8%AE%AE"><span class="nav-number">9.</span> <span class="nav-text">九、类类型专属协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E5%8D%8F%E8%AE%AE%E5%90%88%E6%88%90"><span class="nav-number">10.</span> <span class="nav-text">十、协议合成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E6%A3%80%E6%9F%A5%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">11.</span> <span class="nav-text">十一、检查协议的一致性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%8F%AF%E9%80%89%E6%80%A7"><span class="nav-number">12.</span> <span class="nav-text">十二、协议的可选性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%8D%8F%E8%AE%AE%E6%89%A9%E5%B1%95"><span class="nav-number">13.</span> <span class="nav-text">十三、协议扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#13-1-%E6%8F%90%E4%BE%9B%E9%BB%98%E8%AE%A4%E5%AE%9E%E7%8E%B0"><span class="nav-number">13.1.</span> <span class="nav-text">13.1.提供默认实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#13-2-%E4%B8%BA%E5%8D%8F%E8%AE%AE%E6%89%A9%E5%B1%95%E6%B7%BB%E5%8A%A0%E9%99%90%E5%88%B6%E6%9D%A1%E4%BB%B6"><span class="nav-number">13.2.</span> <span class="nav-text">13.2.为协议扩展添加限制条件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhou Shuai"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Zhou Shuai</p>
+  <div class="site-description" itemprop="description">iOS Developer, Beijing China</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuyubeichen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wuyubeichen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/DreamcoffeeZS" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;DreamcoffeeZS" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/8451823772526" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;8451823772526" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/32a54fe899ef" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;32a54fe899ef" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>简书</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+      <div id="days"></div>
+<script>
+function show_date_time(){
+    window.setTimeout("show_date_time()", 1000);
+    BirthDay=new Date("05/27/2017 15:13:14");
+    today=new Date();
+    timeold=(today.getTime()-BirthDay.getTime());
+    sectimeold=timeold/1000
+    secondsold=Math.floor(sectimeold);
+    msPerDay=24*60*60*1000
+    e_daysold=timeold/msPerDay
+    daysold=Math.floor(e_daysold);
+    e_hrsold=(e_daysold-daysold)*24;
+    hrsold=setzero(Math.floor(e_hrsold));
+    e_minsold=(e_hrsold-hrsold)*60;
+    minsold=setzero(Math.floor((e_hrsold-hrsold)*60));
+    seconds=setzero(Math.floor((e_minsold-minsold)*60));
+    document.getElementById('days').innerHTML="已运行 "+daysold+" 天 "+hrsold+" 小时 "+minsold+" 分 "+seconds+" 秒";
+}
+function setzero(i) {
+    if (i<10) {
+        i="0" + i
+    };
+    return i;
+}
+show_date_time();
+</script>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhou Shuai</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">249k</span>
+</div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共97.1k字</span>
+</div>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2e6fa2ad89748dbf4116',
+      clientSecret: 'f9c89ddcbf94ec2d51bf77a2741a883278b6c9e9',
+      repo        : 'wuyubeichen.github.io',
+      owner       : 'wuyubeichen',
+      admin       : ['wuyubeichen'],
+      id          : 'd736b343d30926930f7d71a13980f61a',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

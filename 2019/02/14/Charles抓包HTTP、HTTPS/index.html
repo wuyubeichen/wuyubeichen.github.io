@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuyubeichen.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="抓包分析数据在移动开发中十分重要，可以帮助我们更快的了解数据构成，提高开发效率。但是在苹果要求上线的App必须使用HTTS之后，HTTPS数据包的抓取分析较为麻烦，在此总结了在mac上使用Charles抓包的详细步骤。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Charles抓包HTTP、HTTPS">
+<meta property="og:url" content="https://wuyubeichen.github.io/2019/02/14/Charles%E6%8A%93%E5%8C%85HTTP%E3%80%81HTTPS/index.html">
+<meta property="og:site_name" content="梧雨北辰的博客">
+<meta property="og:description" content="抓包分析数据在移动开发中十分重要，可以帮助我们更快的了解数据构成，提高开发效率。但是在苹果要求上线的App必须使用HTTS之后，HTTPS数据包的抓取分析较为麻烦，在此总结了在mac上使用Charles抓包的详细步骤。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-1e102569baeb07af?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-33e1d1bfc220ab1b?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-6c21a8f2c7faee79?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-f4824f4de52c2055?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-0ee7a9fb94f18a45?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-f783e5356c3885f6?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-04d82ed6515f81b1?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-b4a018da38edecc0?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-e3955f415befd14d?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-b99d87289ffa281f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-8bf445a572b2f7e8?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1244124-d3fb57a7e92f23ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+<meta property="article:published_time" content="2019-02-14T08:16:49.000Z">
+<meta property="article:modified_time" content="2025-05-03T16:23:37.863Z">
+<meta property="article:author" content="Zhou Shuai">
+<meta property="article:tag" content="抓包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1244124-1e102569baeb07af?imageMogr2/auto-orient/strip%7CimageView2/2/w/500">
+
+<link rel="canonical" href="https://wuyubeichen.github.io/2019/02/14/Charles%E6%8A%93%E5%8C%85HTTP%E3%80%81HTTPS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Charles抓包HTTP、HTTPS | 梧雨北辰的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="梧雨北辰的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      
+      
+         
+    <a target="_blank" rel="noopener" href="https://github.com/wuyubeichen" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">梧雨北辰的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">天行健，君子以自强不息！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuyubeichen.github.io/2019/02/14/Charles%E6%8A%93%E5%8C%85HTTP%E3%80%81HTTPS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Zhou Shuai">
+      <meta itemprop="description" content="iOS Developer, Beijing China">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="梧雨北辰的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Charles抓包HTTP、HTTPS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-14 16:16:49" itemprop="dateCreated datePublished" datetime="2019-02-14T16:16:49+08:00">2019-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-04 00:23:37" itemprop="dateModified" datetime="2025-05-04T00:23:37+08:00">2025-05-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">网络原理</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>抓包分析数据在移动开发中十分重要，可以帮助我们更快的了解数据构成，提高开发效率。但是在苹果要求上线的App必须使用HTTS之后，HTTPS数据包的抓取分析较为麻烦，在此总结了在mac上使用Charles抓包的详细步骤。</p>
+<span id="more"></span>
+
+<p>首先我们下载最先版本的Charles<br>官网下载：<a target="_blank" rel="noopener" href="https://www.charlesproxy.com/download/">https://www.charlesproxy.com/download/</a><br>免费版下载：<a target="_blank" rel="noopener" href="http://xclient.info/search/s/charles/">http://xclient.info/search/s/charles/</a></p>
+<h1 id="一、开启网络请求记录，设置系统网络代理"><a href="#一、开启网络请求记录，设置系统网络代理" class="headerlink" title="一、开启网络请求记录，设置系统网络代理"></a>一、开启网络请求记录，设置系统网络代理</h1><p>安装Charles之后，我们选择Proxy-&gt;Start Recording，开始记录网络请求，然后勾选MacOS Proxy(和其他的代理对象如：Mozilla Firefox Proxy火狐浏览器）,将系统代理设置通过Charles Proxy。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-1e102569baeb07af?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<p>此时打开系统偏好设置-&gt;网络-&gt;高级，我们可以看到本机HTTP和HTTPS请求被代理到127.0.0.1，端口号是8888。至此，我们已经完成了基本的网路请求设置，通过此Mac发起的HTTP请求，我们都可以通过Charles分析。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-33e1d1bfc220ab1b?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<p>注：在Charles关闭的时候，这里的web代理和安全web代理也会变成无勾选状态。保证无代理时，Mac也能够访问网络。</p>
+<h1 id="二、iPhone数据包的抓取"><a href="#二、iPhone数据包的抓取" class="headerlink" title="二、iPhone数据包的抓取"></a>二、iPhone数据包的抓取</h1><h2 id="1-打开Charles的代理功能"><a href="#1-打开Charles的代理功能" class="headerlink" title="1.打开Charles的代理功能"></a>1.打开Charles的代理功能</h2><p>为了使用Charles抓取到iPhone设备的数据包，我们首先要打开Charles的代理功能。选择Proxy -&gt;Proxy Setting，设置Port:8888，选择Enable TransParent HTTP Proxying。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-6c21a8f2c7faee79?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<h2 id="2-获取本机电脑IP"><a href="#2-获取本机电脑IP" class="headerlink" title="2.获取本机电脑IP"></a>2.获取本机电脑IP</h2><p>接下来我们要将手机的网络代理IP设置为Charles运行所在的电脑IP，获取本机电脑的IP方法如下：<br>方法一：Mac电脑上使用Control +空格键，并输入Terminal 可以进入控制台，然后键入 ifconfig en0命令 ，我们查看到当前电脑的IP地址。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-f4824f4de52c2055?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<p>方法二：通过Charles查看本机的IP地址：打开Charles -&gt;Help-&gt;Local IP Address</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-0ee7a9fb94f18a45?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<h2 id="3-设置手机网络代理IP"><a href="#3-设置手机网络代理IP" class="headerlink" title="3. 设置手机网络代理IP"></a>3. 设置手机网络代理IP</h2><p>我们依次打开iphone “设置-&gt;无线局域网”，点击当前连接Wifi右侧的详情按钮。这里显示了当前连接Wifi的基本信息，我们需要将这里底部的HTTP代理改为手动，然后填上Charles运行所在电脑的IP和端口号8888。如图：<br><img src="http://upload-images.jianshu.io/upload_images/1244124-f783e5356c3885f6?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<p>此时，iPhone的网络代理就设置完成了，手机上请求将会被代理到mac上，我们可以很方便的通过Charles查看到手机应用发起的网络请求数据包。</p>
+<h1 id="三、抓取HTTPS数据包"><a href="#三、抓取HTTPS数据包" class="headerlink" title="三、抓取HTTPS数据包"></a>三、抓取HTTPS数据包</h1><p>相对于HTTP类的网络请求，HTTPS请求更加安全，这也使得抓取这类的数据包进行分析要麻烦一些。抓取HTTPS请求数据包进行分析，关键的步骤如下：</p>
+<h2 id="1-安装Charles根证书"><a href="#1-安装Charles根证书" class="headerlink" title="1.安装Charles根证书"></a>1.安装Charles根证书</h2><p>打开charles,依次点击Help -&gt; SSL Proxying -&gt; Install Charles Root Certificate，安装根证书</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-04d82ed6515f81b1?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<h2 id="2-设置证书信任"><a href="#2-设置证书信任" class="headerlink" title="2.设置证书信任"></a>2.设置证书信任</h2><p>在安装证书之后，我们查看钥匙串。选择所有项目，我们会看到一个带有红叉标记不被信任的Charles证书。Charles证书默认是不信任的，需要我们手动设置。右键-&gt;显示简介-&gt;点击信任，我们如图设置始终信任。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-b4a018da38edecc0?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述"></p>
+<h2 id="3-设置-SSL-代理"><a href="#3-设置-SSL-代理" class="headerlink" title="3.设置 SSL 代理"></a>3.设置 SSL 代理</h2><p>打开charles应用，选择Proxy-&gt;SSL Proxying Settings,我们在这里设置SSL Proxy,点击面板上的add，如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-e3955f415befd14d?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="这里写图片描述">在这里我们设置主机地址Host是*,使用通配符表示检测所有网络请求。然后设置端口号是443</p>
+<h2 id="4-iOS设备安装证书"><a href="#4-iOS设备安装证书" class="headerlink" title="4.iOS设备安装证书"></a>4.iOS设备安装证书</h2><p>最后我们还需要在iOS设备上安装证书。点击 Charles 的顶部菜单，选择 Help –&gt; SSL Proxying–&gt; Install Charles Root Certificate on a Mobile Device or Remote Browser，然后就可以看到 Charles 显示如下弹窗：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-b99d87289ffa281f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="屏幕快照 2017-01-09 下午2.18.11.png"></p>
+<p>然后我们需要打开safari ,输入网址： <a target="_blank" rel="noopener" href="http://charlesproxy.com/getssl%EF%BC%8C">http://charlesproxy.com/getssl，</a><br>这时候会弹出安装证书的界面，我们点击安装证书，如图：<br><img src="http://upload-images.jianshu.io/upload_images/1244124-8bf445a572b2f7e8?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="这里写图片描述"><br>目前为止，我们就完成了Charles抓取HTTPS数据包的所有设置了。查看Charles,我们可以看到数据包的内容了。</p>
+<h2 id="5-失败请求的处理"><a href="#5-失败请求的处理" class="headerlink" title="5.失败请求的处理"></a>5.失败请求的处理</h2><p>iOS10.3之后，在上述设置完成之后，所有的https请求都会失败。提示错误：Failure SSLHandshake: Received fatal alert: unknown_ca 和You may need to configure your browser or application to trust the Charles Root Certificate.<br>原因：charles的根证书虽然已经在安装列表中,但在iOS 10.3之后,安装新的自定义证书默认是不受信任的。如果要信任已安装的自定义证书,需要手动打开开关以信任证书。<br>解决：设置-&gt;通用-&gt;关于本机-&gt;证书信任设置-&gt; 找到charles proxy custom root certificate然后信任该证书即可. 模拟器也是这样处理。</p>
+<h1 id="四、使用Charles遇到的问题"><a href="#四、使用Charles遇到的问题" class="headerlink" title="四、使用Charles遇到的问题"></a>四、使用Charles遇到的问题</h1><p>我在使用Charles抓包https之后，在使用applicationLoader上传ipa包的时候遇到了下面的问题：<br>Communication error. Please use diagnostic mode to check connectivity. You need to have outbound access to TCP port 443.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1244124-d3fb57a7e92f23ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="屏幕快照 2017-01-11 下午5.14.08.png"></p>
+<p>解决：将charles关闭，然后再上传ipa文件。<br>至于原因我也没弄明白，如果哪位朋友知道也可以告诉我一下。</p>
+
+    </div>
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Zhou Shuai
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wuyubeichen.github.io/2019/02/14/Charles%E6%8A%93%E5%8C%85HTTP%E3%80%81HTTPS/" title="Charles抓包HTTP、HTTPS">https://wuyubeichen.github.io/2019/02/14/Charles抓包HTTP、HTTPS/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%93%E5%8C%85/" rel="tag"># 抓包</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/08/Python%E5%AD%A6%E4%B9%A005-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B(04)-set%E4%B8%8Edict/" rel="prev" title="Python学习05-数据类型(04)-set与dict">
+      <i class="fa fa-chevron-left"></i> Python学习05-数据类型(04)-set与dict
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/02/18/iOS%E5%BC%80%E5%8F%91-CPU%E6%9E%B6%E6%9E%84%E9%97%AE%E9%A2%98/" rel="next" title="iOS开发-CPU架构问题">
+      iOS开发-CPU架构问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E8%AE%B0%E5%BD%95%EF%BC%8C%E8%AE%BE%E7%BD%AE%E7%B3%BB%E7%BB%9F%E7%BD%91%E7%BB%9C%E4%BB%A3%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">一、开启网络请求记录，设置系统网络代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81iPhone%E6%95%B0%E6%8D%AE%E5%8C%85%E7%9A%84%E6%8A%93%E5%8F%96"><span class="nav-number">2.</span> <span class="nav-text">二、iPhone数据包的抓取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%89%93%E5%BC%80Charles%E7%9A%84%E4%BB%A3%E7%90%86%E5%8A%9F%E8%83%BD"><span class="nav-number">2.1.</span> <span class="nav-text">1.打开Charles的代理功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%8E%B7%E5%8F%96%E6%9C%AC%E6%9C%BA%E7%94%B5%E8%84%91IP"><span class="nav-number">2.2.</span> <span class="nav-text">2.获取本机电脑IP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BE%E7%BD%AE%E6%89%8B%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BB%A3%E7%90%86IP"><span class="nav-number">2.3.</span> <span class="nav-text">3. 设置手机网络代理IP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%8A%93%E5%8F%96HTTPS%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">三、抓取HTTPS数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85Charles%E6%A0%B9%E8%AF%81%E4%B9%A6"><span class="nav-number">3.1.</span> <span class="nav-text">1.安装Charles根证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%AE%BE%E7%BD%AE%E8%AF%81%E4%B9%A6%E4%BF%A1%E4%BB%BB"><span class="nav-number">3.2.</span> <span class="nav-text">2.设置证书信任</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BE%E7%BD%AE-SSL-%E4%BB%A3%E7%90%86"><span class="nav-number">3.3.</span> <span class="nav-text">3.设置 SSL 代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-iOS%E8%AE%BE%E5%A4%87%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6"><span class="nav-number">3.4.</span> <span class="nav-text">4.iOS设备安装证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%A4%B1%E8%B4%A5%E8%AF%B7%E6%B1%82%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">5.失败请求的处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BD%BF%E7%94%A8Charles%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">四、使用Charles遇到的问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhou Shuai"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Zhou Shuai</p>
+  <div class="site-description" itemprop="description">iOS Developer, Beijing China</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuyubeichen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wuyubeichen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/DreamcoffeeZS" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;DreamcoffeeZS" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/8451823772526" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;8451823772526" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/32a54fe899ef" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;32a54fe899ef" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>简书</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+      <div id="days"></div>
+<script>
+function show_date_time(){
+    window.setTimeout("show_date_time()", 1000);
+    BirthDay=new Date("05/27/2017 15:13:14");
+    today=new Date();
+    timeold=(today.getTime()-BirthDay.getTime());
+    sectimeold=timeold/1000
+    secondsold=Math.floor(sectimeold);
+    msPerDay=24*60*60*1000
+    e_daysold=timeold/msPerDay
+    daysold=Math.floor(e_daysold);
+    e_hrsold=(e_daysold-daysold)*24;
+    hrsold=setzero(Math.floor(e_hrsold));
+    e_minsold=(e_hrsold-hrsold)*60;
+    minsold=setzero(Math.floor((e_hrsold-hrsold)*60));
+    seconds=setzero(Math.floor((e_minsold-minsold)*60));
+    document.getElementById('days').innerHTML="已运行 "+daysold+" 天 "+hrsold+" 小时 "+minsold+" 分 "+seconds+" 秒";
+}
+function setzero(i) {
+    if (i<10) {
+        i="0" + i
+    };
+    return i;
+}
+show_date_time();
+</script>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhou Shuai</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">249k</span>
+</div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共97.1k字</span>
+</div>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2e6fa2ad89748dbf4116',
+      clientSecret: 'f9c89ddcbf94ec2d51bf77a2741a883278b6c9e9',
+      repo        : 'wuyubeichen.github.io',
+      owner       : 'wuyubeichen',
+      admin       : ['wuyubeichen'],
+      id          : '8ab8541b4959a4004c7e666fa075e92a',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

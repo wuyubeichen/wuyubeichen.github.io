@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuyubeichen.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="主要内容：  构造器简介 指定构造器和便利构造器 类的构造器的使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift学习05-构造器(中)">
+<meta property="og:url" content="https://wuyubeichen.github.io/2017/08/05/Swift%E5%AD%A6%E4%B9%A005-%E6%9E%84%E9%80%A0%E5%99%A8(%E4%B8%AD)/index.html">
+<meta property="og:site_name" content="梧雨北辰的博客">
+<meta property="og:description" content="主要内容：  构造器简介 指定构造器和便利构造器 类的构造器的使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-08-05T10:15:21.000Z">
+<meta property="article:modified_time" content="2025-05-03T16:12:27.318Z">
+<meta property="article:author" content="Zhou Shuai">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Swift">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wuyubeichen.github.io/2017/08/05/Swift%E5%AD%A6%E4%B9%A005-%E6%9E%84%E9%80%A0%E5%99%A8(%E4%B8%AD)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Swift学习05-构造器(中) | 梧雨北辰的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="梧雨北辰的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      
+      
+         
+    <a target="_blank" rel="noopener" href="https://github.com/wuyubeichen" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">梧雨北辰的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">天行健，君子以自强不息！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuyubeichen.github.io/2017/08/05/Swift%E5%AD%A6%E4%B9%A005-%E6%9E%84%E9%80%A0%E5%99%A8(%E4%B8%AD)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Zhou Shuai">
+      <meta itemprop="description" content="iOS Developer, Beijing China">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="梧雨北辰的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Swift学习05-构造器(中)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-05 18:15:21" itemprop="dateCreated datePublished" datetime="2017-08-05T18:15:21+08:00">2017-08-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-04 00:12:27" itemprop="dateModified" datetime="2025-05-04T00:12:27+08:00">2025-05-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Swift/" itemprop="url" rel="index"><span itemprop="name">Swift</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>主要内容：</strong></p>
+<ol>
+<li>构造器简介</li>
+<li>指定构造器和便利构造器</li>
+<li>类的构造器的使用</li>
+</ol>
+<span id="more"></span>
+
+<h4 id="一、构造器简介"><a href="#一、构造器简介" class="headerlink" title="一、构造器简介"></a>一、构造器简介</h4><p>本篇继续对<code>Swift</code>中的构造器进行介绍，这里主要说到类的继承和构造。 作为引用类型的类具有的继承特性，这使得类的构造过程较为复杂一些，因为涉及到很多细节性的问题。在使用之前，我们需要了解一些基本的问题：</p>
+<ol>
+<li>类中所有存储属性，包括继承父类的属性，都要在构造过程中设置初值</li>
+<li><code>Swift</code>类的构造器分为指定构造器和便利构造器，确保完成构造过程</li>
+</ol>
+<h4 id="二、指定构造器和便利构造器"><a href="#二、指定构造器和便利构造器" class="headerlink" title="二、指定构造器和便利构造器"></a>二、指定构造器和便利构造器</h4><h5 id="指定构造器："><a href="#指定构造器：" class="headerlink" title="指定构造器："></a>指定构造器：</h5><ul>
+<li>类的主要构造器，负责初始化类中所有属性，在继承关系中可调用父类链中的父类构造器;</li>
+<li>每个类至少一个指定构造器。但是某些情况下，许多类是通过继承父类的指定构造器来满足这个条件;</li>
+</ul>
+<h5 id="便利构造器："><a href="#便利构造器：" class="headerlink" title="便利构造器："></a>便利构造器：</h5><ul>
+<li>辅助类型的构造器，调用同一个类中的指定构造器完成类的初始化操作;</li>
+<li>便利构造器需要在<code>init</code>关键字之前添加<code>convenience</code>关键字，使用空格分开;</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FatherClass</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> valueOne: <span class="type">Int</span></span><br><span class="line">    <span class="comment">//指定构造器</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">valueOne</span>: <span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.valueOne <span class="operator">=</span> valueOne</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChildClass</span>: <span class="title class_ inherited__">FatherClass</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> valueTwo:<span class="type">Int</span> <span class="comment">//子类的新引入属性</span></span><br><span class="line">    <span class="comment">//指定构造器</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">valueOne</span>: <span class="type">Int</span> , <span class="params">valueTwo</span>:<span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.valueTwo <span class="operator">=</span> valueTwo</span><br><span class="line">        <span class="comment">//先初始化新引入属性，再初始化超类</span></span><br><span class="line">        <span class="keyword">super</span>.<span class="keyword">init</span>(valueOne: valueOne)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//便利构造器</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">convenience</span> <span class="keyword">init</span>(<span class="params">valueOne</span>: <span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.<span class="keyword">init</span>(valueOne: valueOne);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="三、类的构造器的使用"><a href="#三、类的构造器的使用" class="headerlink" title="三、类的构造器的使用"></a>三、类的构造器的使用</h4><p>关于类的构造器的使用在使用的时候，细节方面需要要注意很多，通过查找一些资料，现总结如下：</p>
+<h5 id="1-指定构造器和便利构造器的基本使用原则："><a href="#1-指定构造器和便利构造器的基本使用原则：" class="headerlink" title="1. 指定构造器和便利构造器的基本使用原则："></a>1. 指定构造器和便利构造器的基本使用原则：</h5><ul>
+<li>  当前类存在父类时，指定构造器器必须调用其直接父类的指定构造器，为保证继承的属性得以初始化;</li>
+<li>  便利构造器必须调用同一类中定义的其他构造器。而且最终会导致一个指定构造器被调用;</li>
+</ul>
+<h5 id="2-Swift两段式构造过程"><a href="#2-Swift两段式构造过程" class="headerlink" title="2. Swift两段式构造过程"></a>2. Swift两段式构造过程</h5><p><code>Swift</code> 中类的构造过程包含两个阶段，被称为是二段式构造:</p>
+<ol>
+<li>第一阶段：每个存储型的值指定一个初值;</li>
+<li>第二阶段：给当前类一个机会，在新实例准备使用之前进一步修改定制存储型的属性;</li>
+</ol>
+<p><strong>与OC的区别</strong>：<code>Swift</code>与<code>OC</code>的构造过程相似，区别在于阶段一，<code>OC</code>给每个属性赋值为<code>0</code>或者空值，但是<code>Swift</code>更为灵活，允许开发者指定自己所需的初始值(默认值);</p>
+<h5 id="3-两段式构造需要注意的事项"><a href="#3-两段式构造需要注意的事项" class="headerlink" title="3. 两段式构造需要注意的事项"></a>3. 两段式构造需要注意的事项</h5><ul>
+<li>指定构造器必须保证当前类新引入所有属性初始化完成之后，才能将其构造器任务继续向上代理给父类的构造器。</li>
+<li>指定构造器必须先向上代理调用父类构造器，然后再为其继承的属性设置新值，否则，指定构造器赋予的新值将被父类中的构造器所覆盖。</li>
+<li>便利构造器必须先代理调用同一类中的其它构造器，然后再为任意属性赋新值。否则，便利构造器赋予的新值将被同一类中其它指定构造器所覆盖。</li>
+<li>构造器在第一阶段构造完成之前，不能调用任何实例方法，不能读取任何实例属性的值，不能引用self 作为一个值，因为此时还没构造有效实例。</li>
+</ul>
+<h5 id="4-总结两段式构造的详细流程"><a href="#4-总结两段式构造的详细流程" class="headerlink" title="4. 总结两段式构造的详细流程"></a>4. 总结两段式构造的详细流程</h5><p>第一阶段：</p>
+<ul>
+<li>某个指定构造器或便利构造器被调用。</li>
+<li>完成新实例内存的分配，但此时内存还没有被初始化。</li>
+<li>指定构造器确保其所在类引入的所有存储型属性都已赋初值。存储型属性所属的内存完成初始化。</li>
+<li>指定构造器将调用父类的构造器，完成父类属性的初始化。这个调用父类构造器的过程沿着构造器链一直往上执行，直到到达构造器链的最顶部。</li>
+<li>当到达了构造器链最顶部，且已确保所有实例包含的存储型属性都已经赋值，这个实例的内存被认为已经完全初始化。此时阶段 1 完成。</li>
+</ul>
+<p>第二阶段：</p>
+<ol>
+<li>从顶部构造器链一直往下，每个构造器链中类的指定构造器都有机会进一步定制实例。构造器此时可以访问self、修改它的属性并调用实例方法等等;</li>
+<li>最终，任意构造器链中的便利构造器可以有机会定制实例和使用self;</li>
+</ol>
+<h4 id="四、构造器的继承与重写"><a href="#四、构造器的继承与重写" class="headerlink" title="四、构造器的继承与重写"></a>四、构造器的继承与重写</h4><p>与<code>OC</code>不同，<code>Swift</code>中的子类默认情况不会自动继承父类的构造器，这是因为子类可能有更多新增属性，直接调用父类的构造器，可能会有一些属性无法初始化为出现错误;         如果我们希望子类拥有一个或多个与父类相同的构造器，那么这相当于子类重写了父类的构造器，需要在重写方法前添加override修饰符。（override的作用是提示编译器去检查父类中是否有相匹配的指定构造器，并验证构造器参数是否正确）</p>
+<p>注意：</p>
+<ol>
+<li>重写系统自带的默认构造器（虽然不是显式的），也要带上override修饰符;</li>
+<li>重写父类指定构造器必须带上override，即使你的子类将父类的指定构造器重写成了便利构造器;</li>
+<li>子类编写和父类便利构造器相匹配的子类构造器时，由于子类不能直接调用父类的便利构造器，并不能看做是对父类构造器的重写。所以子类中“重写”父类便利构造器时，不需要加override修饰符;</li>
+</ol>
+<h4 id="五、构造器的自动继承"><a href="#五、构造器的自动继承" class="headerlink" title="五、构造器的自动继承"></a>五、构造器的自动继承</h4><p>子类在默认情况下不会继承父类的构造器。但是如果满足特定条件，父类构造器还是是可以被自动继承的;</p>
+<p>构造器的自动继承需要满足前提条件是：子类中引入的所有新属性都提供了默认值。</p>
+<p>然后可分为两种情况：</p>
+<h5 id="情况1-子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器。"><a href="#情况1-子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器。" class="headerlink" title="情况1:子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器。"></a>情况1:子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器。</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SuperClass</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> valueOne: <span class="type">Int</span></span><br><span class="line">    <span class="comment">//指定构造器</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">valueOne</span>: <span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.valueOne <span class="operator">=</span> valueOne</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SubClass</span>: <span class="title class_ inherited__">SuperClass</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> valueTwo:<span class="type">Int</span>  <span class="operator">=</span> <span class="number">100</span> <span class="comment">//子类的新引入属性</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//自动继承了父类的构造器,这里被使用创建子类，子类新属性使用默认值</span></span><br><span class="line"><span class="keyword">let</span> subClass <span class="operator">=</span> <span class="type">SubClass</span>(valueOne: <span class="number">10</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;subClass：(<span class="subst">\(subClass.valueOne)</span>) valueTwo(<span class="subst">\(subClass.valueTwo)</span>)&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="情况2：子类提供了所有父类指定构造器的实现-通过情况1继承过来的或者子类自定义实现-，此时子类将自动继承所有父类的便利构造器。"><a href="#情况2：子类提供了所有父类指定构造器的实现-通过情况1继承过来的或者子类自定义实现-，此时子类将自动继承所有父类的便利构造器。" class="headerlink" title="情况2：子类提供了所有父类指定构造器的实现(通过情况1继承过来的或者子类自定义实现)，此时子类将自动继承所有父类的便利构造器。"></a>情况2：子类提供了所有父类指定构造器的实现(通过情况1继承过来的或者子类自定义实现)，此时子类将自动继承所有父类的便利构造器。</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Animal</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name:<span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> age: <span class="type">Int</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">name</span>:<span class="type">String</span>, <span class="params">age</span>:<span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.name <span class="operator">=</span> name</span><br><span class="line">        <span class="keyword">self</span>.age <span class="operator">=</span> age</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//父类的便利构造器</span></span><br><span class="line">    <span class="keyword">convenience</span> <span class="keyword">init</span>(<span class="params">name</span>:<span class="type">String</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.<span class="keyword">init</span>(name:name, age:<span class="number">10</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span>: <span class="title class_ inherited__">Animal</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> nickName:<span class="type">String</span>!</span><br><span class="line">    <span class="comment">//实现了父类中的指定构造器</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">init</span>(<span class="params">name</span>:<span class="type">String</span>, <span class="params">age</span>:<span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">super</span>.<span class="keyword">init</span>(name:name, age:age)</span><br><span class="line">        <span class="keyword">self</span>.name <span class="operator">=</span> name</span><br><span class="line">        <span class="keyword">self</span>.age <span class="operator">=</span> age <span class="operator">+</span> <span class="number">2</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> ps <span class="operator">=</span> <span class="type">Person</span>(name: <span class="string">&quot;zs&quot;</span>, age: <span class="number">18</span>)</span><br></pre></td></tr></table></figure>
+
+<p>自动继承注意：</p>
+<ol>
+<li>即使你在子类中添加了更多的便利构造器，这两条规则仍然适用。</li>
+<li>对于情况 2，子类可以将父类的指定构造器实现为便利构造器。</li>
+</ol>
+
+    </div>
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Zhou Shuai
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wuyubeichen.github.io/2017/08/05/Swift%E5%AD%A6%E4%B9%A005-%E6%9E%84%E9%80%A0%E5%99%A8(%E4%B8%AD)/" title="Swift学习05-构造器(中)">https://wuyubeichen.github.io/2017/08/05/Swift学习05-构造器(中)/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Swift/" rel="tag"># Swift</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/04/Swift%E5%AD%A6%E4%B9%A004-%E6%9E%84%E9%80%A0%E5%99%A8(%E4%B8%8A)/" rel="prev" title="Swift学习04-构造器(上)">
+      <i class="fa fa-chevron-left"></i> Swift学习04-构造器(上)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/06/Swift%E5%AD%A6%E4%B9%A006-%E6%9E%84%E9%80%A0%E5%99%A8(%E4%B8%8B)/" rel="next" title="Swift学习06-构造器(下)">
+      Swift学习06-构造器(下) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9E%84%E9%80%A0%E5%99%A8%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、构造器简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%8C%87%E5%AE%9A%E6%9E%84%E9%80%A0%E5%99%A8%E5%92%8C%E4%BE%BF%E5%88%A9%E6%9E%84%E9%80%A0%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">二、指定构造器和便利构造器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E6%9E%84%E9%80%A0%E5%99%A8%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">指定构造器：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BE%BF%E5%88%A9%E6%9E%84%E9%80%A0%E5%99%A8%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">便利构造器：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%B1%BB%E7%9A%84%E6%9E%84%E9%80%A0%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">三、类的构造器的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%8C%87%E5%AE%9A%E6%9E%84%E9%80%A0%E5%99%A8%E5%92%8C%E4%BE%BF%E5%88%A9%E6%9E%84%E9%80%A0%E5%99%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E5%8E%9F%E5%88%99%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">1. 指定构造器和便利构造器的基本使用原则：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Swift%E4%B8%A4%E6%AE%B5%E5%BC%8F%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">2. Swift两段式构造过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E4%B8%A4%E6%AE%B5%E5%BC%8F%E6%9E%84%E9%80%A0%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.3.</span> <span class="nav-text">3. 两段式构造需要注意的事项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93%E4%B8%A4%E6%AE%B5%E5%BC%8F%E6%9E%84%E9%80%A0%E7%9A%84%E8%AF%A6%E7%BB%86%E6%B5%81%E7%A8%8B"><span class="nav-number">3.4.</span> <span class="nav-text">4. 总结两段式构造的详细流程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%9E%84%E9%80%A0%E5%99%A8%E7%9A%84%E7%BB%A7%E6%89%BF%E4%B8%8E%E9%87%8D%E5%86%99"><span class="nav-number">4.</span> <span class="nav-text">四、构造器的继承与重写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%9E%84%E9%80%A0%E5%99%A8%E7%9A%84%E8%87%AA%E5%8A%A8%E7%BB%A7%E6%89%BF"><span class="nav-number">5.</span> <span class="nav-text">五、构造器的自动继承</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%83%85%E5%86%B51-%E5%AD%90%E7%B1%BB%E6%B2%A1%E6%9C%89%E5%AE%9A%E4%B9%89%E4%BB%BB%E4%BD%95%E6%8C%87%E5%AE%9A%E6%9E%84%E9%80%A0%E5%99%A8%EF%BC%8C%E5%AE%83%E5%B0%86%E8%87%AA%E5%8A%A8%E7%BB%A7%E6%89%BF%E6%89%80%E6%9C%89%E7%88%B6%E7%B1%BB%E7%9A%84%E6%8C%87%E5%AE%9A%E6%9E%84%E9%80%A0%E5%99%A8%E3%80%82"><span class="nav-number">5.1.</span> <span class="nav-text">情况1:子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%83%85%E5%86%B52%EF%BC%9A%E5%AD%90%E7%B1%BB%E6%8F%90%E4%BE%9B%E4%BA%86%E6%89%80%E6%9C%89%E7%88%B6%E7%B1%BB%E6%8C%87%E5%AE%9A%E6%9E%84%E9%80%A0%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0-%E9%80%9A%E8%BF%87%E6%83%85%E5%86%B51%E7%BB%A7%E6%89%BF%E8%BF%87%E6%9D%A5%E7%9A%84%E6%88%96%E8%80%85%E5%AD%90%E7%B1%BB%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0-%EF%BC%8C%E6%AD%A4%E6%97%B6%E5%AD%90%E7%B1%BB%E5%B0%86%E8%87%AA%E5%8A%A8%E7%BB%A7%E6%89%BF%E6%89%80%E6%9C%89%E7%88%B6%E7%B1%BB%E7%9A%84%E4%BE%BF%E5%88%A9%E6%9E%84%E9%80%A0%E5%99%A8%E3%80%82"><span class="nav-number">5.2.</span> <span class="nav-text">情况2：子类提供了所有父类指定构造器的实现(通过情况1继承过来的或者子类自定义实现)，此时子类将自动继承所有父类的便利构造器。</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhou Shuai"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Zhou Shuai</p>
+  <div class="site-description" itemprop="description">iOS Developer, Beijing China</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuyubeichen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wuyubeichen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/DreamcoffeeZS" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;DreamcoffeeZS" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/8451823772526" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;8451823772526" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/32a54fe899ef" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;32a54fe899ef" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>简书</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+      <div id="days"></div>
+<script>
+function show_date_time(){
+    window.setTimeout("show_date_time()", 1000);
+    BirthDay=new Date("05/27/2017 15:13:14");
+    today=new Date();
+    timeold=(today.getTime()-BirthDay.getTime());
+    sectimeold=timeold/1000
+    secondsold=Math.floor(sectimeold);
+    msPerDay=24*60*60*1000
+    e_daysold=timeold/msPerDay
+    daysold=Math.floor(e_daysold);
+    e_hrsold=(e_daysold-daysold)*24;
+    hrsold=setzero(Math.floor(e_hrsold));
+    e_minsold=(e_hrsold-hrsold)*60;
+    minsold=setzero(Math.floor((e_hrsold-hrsold)*60));
+    seconds=setzero(Math.floor((e_minsold-minsold)*60));
+    document.getElementById('days').innerHTML="已运行 "+daysold+" 天 "+hrsold+" 小时 "+minsold+" 分 "+seconds+" 秒";
+}
+function setzero(i) {
+    if (i<10) {
+        i="0" + i
+    };
+    return i;
+}
+show_date_time();
+</script>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhou Shuai</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">249k</span>
+</div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共97.1k字</span>
+</div>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2e6fa2ad89748dbf4116',
+      clientSecret: 'f9c89ddcbf94ec2d51bf77a2741a883278b6c9e9',
+      repo        : 'wuyubeichen.github.io',
+      owner       : 'wuyubeichen',
+      admin       : ['wuyubeichen'],
+      id          : 'e62c5d0c8a2b1e3d08dda5076c5c0b66',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
