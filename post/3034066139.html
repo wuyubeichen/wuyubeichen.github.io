@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuyubeichen.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="主要内容：  DTCoreText简介 DTCoreText的集成 DTCoreText的使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-DTCoreText的集成与使用">
+<meta property="og:url" content="https://wuyubeichen.github.io/post/3034066139.html">
+<meta property="og:site_name" content="梧雨北辰的博客">
+<meta property="og:description" content="主要内容：  DTCoreText简介 DTCoreText的集成 DTCoreText的使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_targets_deployment_Info.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_scheme_release.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_compile_generic_ios.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_compile_ios_simulator.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_compile_derived_data.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_build_products.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_lipo_create_terminal.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_lipo_create_result.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_DTAttributedLabel_result.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_DTAttributedTextCell_result.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_image_not_found.png">
+<meta property="article:published_time" content="2019-02-26T08:16:49.000Z">
+<meta property="article:modified_time" content="2025-05-05T10:15:01.080Z">
+<meta property="article:author" content="Zhou Shuai">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="DTCoreText">
+<meta property="article:tag" content="UI问题">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_targets_deployment_Info.png">
+
+<link rel="canonical" href="https://wuyubeichen.github.io/post/3034066139.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS开发-DTCoreText的集成与使用 | 梧雨北辰的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="梧雨北辰的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      
+      
+         
+    <a target="_blank" rel="noopener" href="https://github.com/wuyubeichen" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">梧雨北辰的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">天行健，君子以自强不息！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuyubeichen.github.io/post/3034066139.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Zhou Shuai">
+      <meta itemprop="description" content="iOS Developer, Beijing China">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="梧雨北辰的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS开发-DTCoreText的集成与使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-26 16:16:49" itemprop="dateCreated datePublished" datetime="2019-02-26T16:16:49+08:00">2019-02-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-05 18:15:01" itemprop="dateModified" datetime="2025-05-05T18:15:01+08:00">2025-05-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">iOS开发</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>主要内容：</p>
+<ol>
+<li><code>DTCoreText</code>简介</li>
+<li><code>DTCoreText</code>的集成</li>
+<li><code>DTCoreText</code>的使用<span id="more"></span></li>
+<li><code>DTAttributedLabel</code></li>
+<li><code>DTAttributedTextView</code></li>
+<li><code>DTAttributedTextCell</code></li>
+<li>可能遇到的错误</li>
+</ol>
+<h4 id="一、DTCoreText简介"><a href="#一、DTCoreText简介" class="headerlink" title="一、DTCoreText简介"></a>一、DTCoreText简介</h4><p><code>DTCoreText</code>是可以将<code>HTML</code>字符串转化为富文本使用的工具，既保证原生实现又能适应灵活的样式修改，而且相比于使用<code>WebView</code>显示内容在性能上也有很大优势，本篇就这一技术的使用进行总结。</p>
+<p><code>DTCoreText</code>相关资源如下：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/Cocoanetics/DTCoreText">DTCoreText源码下载</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.cocoanetics.com/DTCoreText/">DTCoreText官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.cocoanetics.com/DTCoreText/docs/Setup%20Guide.html">DTCoreText集成文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/DreamcoffeeZS/DTCoreTextDemo.git">本文DTCoreText测试工程</a></li>
+</ol>
+<p>温馨提示：文中代码量比较大，看起来可能比较费劲，所以先将本文的<a target="_blank" rel="noopener" href="https://github.com/DreamcoffeeZS/DTCoreTextDemo.git">Demo链接</a>放在这里，结合代码看更方便，毕竟代码才是硬道理嘛！</p>
+<h4 id="二、DTCoreText的集成"><a href="#二、DTCoreText的集成" class="headerlink" title="二、DTCoreText的集成"></a>二、DTCoreText的集成</h4><p>在项目中使用<code>DTCoreText</code>需要它的两个静态库：<code>DTCoreText.framework</code>和<code>DTFoundation.framework</code>，但是从<code>Github</code>下载的文件却不能直接使用。</p>
+<p>起初，我是直接从网上其他地方下载打包好的静态库来使用的，但这样会遗漏掉更新。所以，这里总结了集成<code>DTCoreText</code>的具体步骤。</p>
+<h5 id="1-下载源码"><a href="#1-下载源码" class="headerlink" title="1.下载源码"></a>1.下载源码</h5><p>创建一个文件夹<code>DTCoreText</code>，使用终端命令下载源码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --recursive [https://github.com/Cocoanetics/DTCoreText.git](https://github.com/Cocoanetics/DTCoreText.git) Externals/DTCoreText</span><br></pre></td></tr></table></figure>
+<h5 id="2-设置编译配置"><a href="#2-设置编译配置" class="headerlink" title="2.设置编译配置"></a>2.设置编译配置</h5><p>修改<code>DTCoreText</code>工程的编译配置，然后运行工程就得到适合不同平台的静态库；</p>
+<p>为了获取到适合<code>iOS</code>设备使用的<code>SDK</code>，选择工程<code>Target</code>为<code>DTCoreText(iOS)</code>，并依次选择<code>DTCoreText(iOS)</code> -&gt; <code>Deployment Info</code> -&gt; 选择需要最低支持的系统版本；<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_targets_deployment_Info.png" width="100%" align=center/></p>
+<h5 id="3-设置Scheme"><a href="#3-设置Scheme" class="headerlink" title="3.设置Scheme"></a>3.设置Scheme</h5><p>选择<code>Product</code> -&gt; <code>Scheme</code> -&gt; <code>Edit Scheme</code>，修改编译环境修改为<code>Release</code>模式：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_scheme_release.png" width="100%" align=center/></p>
+<h5 id="4-模拟器和真机分别编译"><a href="#4-模拟器和真机分别编译" class="headerlink" title="4.模拟器和真机分别编译"></a>4.模拟器和真机分别编译</h5><p>使用<code>commadn+B</code>执行代码编译，注意一定要选择正确的<code>Target</code>，既然是用于<code>iOS</code>，就应该选择<code>DTCoreText (iOS)</code>这个<code>Target</code>进行编译</p>
+<img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_compile_generic_ios.png" width="100%" align=center/>
+<img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_compile_ios_simulator.png" width="100%" align=center/>
+
+<h5 id="5-打开编译缓存，获取静态库"><a href="#5-打开编译缓存，获取静态库" class="headerlink" title="5.打开编译缓存，获取静态库"></a>5.打开编译缓存，获取静态库</h5><p>在<code>Xcode</code>依次打开<code>File</code> -&gt; <code>File Setting</code> -&gt; <code>DerivedData</code>，然后点击之后的路径箭头可以找到<code>DTCoreText</code>的编译缓存文件夹：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_compile_derived_data.png" width="100%" align=center/></p>
+<p>然后我们再依次打开<code>Build</code>-&gt;<code>Products</code>，将会看到适合模拟器和真机使用的两个静态库文件夹：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_build_products.png" width="100%" align=center/></p>
+<h5 id="6-合并静态库"><a href="#6-合并静态库" class="headerlink" title="6.合并静态库"></a>6.合并静态库</h5><p>经过上述步骤，我分别得到了适合模拟器和真机使用的静态库，现在我们把它们合并。首先我们把<code>Products</code>文件拷贝到一个合适的位置，然后在控制台执行合并静态库的命令如下：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_lipo_create_terminal.png" width="100%" align=center/></p>
+<p>如图，我们使用<code>lipo</code>命令合并了适合模拟器和真机使用的可执行文件：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_lipo_create_result.png" width="300" align=center/></p>
+<p>然后，我们需要将两个文件分别对应拷贝到<code>Release-iphones</code>文件夹中的<code>DTCoreText.framework</code>和<code>DTFoundation.framework</code>中，这样最终我们就得到想要的静态库。</p>
+<h4 id="三、DTCoreText的使用"><a href="#三、DTCoreText的使用" class="headerlink" title="三、DTCoreText的使用"></a>三、DTCoreText的使用</h4><p>在这之前我们准备一段测试用的<code>Html</code>如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_html <span class="operator">=</span> @<span class="string">&quot;&lt;span style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;&lt;strong&gt;标题1&lt;/strong&gt;&lt;/span&gt;&lt;br/&gt;&lt;span align=<span class="subst">\&quot;</span>left<span class="subst">\&quot;</span> style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;详细介绍详细介绍详细介绍详细介绍详细介绍详细介绍。&lt;/span&gt;&lt;br/&gt;&lt;img src=<span class="subst">\&quot;</span>http://cn-qinqimaifang-uat.oss-cn-hangzhou.aliyuncs.com/img/specialist/upload/spcetiicwlz1v_54e2e00fa8a6faf66168571654dbfee2.jpg<span class="subst">\&quot;</span> _src=<span class="subst">\&quot;</span>http://cn-qinqimaifang-uat.oss-cn-hangzhou.aliyuncs.com/img/specialist/upload/spcetiicwlz1v_54e2e00fa8a6faf66168571654dbfee2.jpg<span class="subst">\&quot;</span>&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;百度:&lt;a href=<span class="subst">\&quot;</span>http://www.baidu.com.cn<span class="subst">\&quot;</span>&gt;my testlink&lt;/a&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;电话：&lt;a href=<span class="subst">\&quot;</span>tel:4008001234<span class="subst">\&quot;</span>&gt;my phoneNum&lt;/a&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;我邮箱:&lt;a href=<span class="subst">\&quot;</span>mailto:dreamcoffeezs@163.com<span class="subst">\&quot;</span>&gt;my mail&lt;/a&gt;&lt;/span&gt;&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>关于<code>DTCoreText</code>，我们主要用到它的三个控件，分别是<code>DTAttributedLabel</code>，<code>DTAttributedTextView</code>和<code>DTAttributedTextCell</code>，下面对它们的使用进行具体说明。</p>
+<h4 id="四、使用DTAttributedLabel"><a href="#四、使用DTAttributedLabel" class="headerlink" title="四、使用DTAttributedLabel"></a>四、使用DTAttributedLabel</h4><p>顾名思义，我们会把<code>DTAttributedLabel</code>当做一个<code>UILabel</code>来使用，但事实上<code>DTAttributedLabel</code>并不属于<code>UILabel</code>的子类，下面针对<code>DTAttributedLabel</code>使用的三个问题进行介绍。</p>
+<h5 id="1-显示基本文本"><a href="#1-显示基本文本" class="headerlink" title="1.显示基本文本"></a>1.显示基本文本</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.创建DTAttributedLabel</span></span><br><span class="line">_attributedLabel <span class="operator">=</span> [[<span class="type">DTAttributedLabel</span> alloc] initWithFrame:<span class="type">CGRectZero</span>];</span><br><span class="line">_attributedLabel.delegate <span class="operator">=</span> <span class="keyword">self</span>;</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.attributedLabel];</span><br><span class="line"></span><br><span class="line"><span class="comment">//2.Html转化富文本</span></span><br><span class="line"><span class="type">NSData</span> <span class="operator">*</span>data <span class="operator">=</span> [_html dataUsingEncoding:<span class="type">NSUTF8StringEncoding</span>];</span><br><span class="line"><span class="type">NSAttributedString</span> <span class="operator">*</span>attributedString <span class="operator">=</span> [[<span class="type">NSAttributedString</span> alloc] initWithHTMLData:data documentAttributes:<span class="type">NULL</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//3.计算Frame</span></span><br><span class="line"><span class="comment">//预设一个最大的Frame,限宽不限高，方便以后计算布局</span></span><br><span class="line">_viewMaxRect <span class="operator">=</span>  <span class="type">CGRectMake</span>(<span class="number">15</span>, <span class="number">15</span>, <span class="type">ZSToolScreenWidth</span> <span class="operator">-</span> <span class="number">15</span><span class="operator">*</span><span class="number">2</span>, <span class="type">CGFLOAT_HEIGHT_UNKNOWN</span>);        </span><br><span class="line"><span class="type">DTCoreTextLayouter</span> <span class="operator">*</span>layouter <span class="operator">=</span> [[<span class="type">DTCoreTextLayouter</span> alloc] initWithAttributedString:attributedString];</span><br><span class="line"><span class="type">NSRange</span> entireStringRange <span class="operator">=</span> <span class="type">NSMakeRange</span>(<span class="number">0</span>, [attributedString length]);</span><br><span class="line"><span class="type">DTCoreTextLayoutFrame</span> <span class="operator">*</span>layoutFrame <span class="operator">=</span> [layouter layoutFrameWithRect:_viewMaxRect range:entireStringRange];</span><br><span class="line"><span class="type">CGSize</span> textSize <span class="operator">=</span> [layoutFrame frame].size;</span><br><span class="line"><span class="keyword">self</span>.attributedLabel.frame <span class="operator">=</span> <span class="type">CGRectMake</span>(_viewMaxRect.origin.x, _viewMaxRect.origin.y, _viewMaxRect.size.width, textSize.height);</span><br><span class="line">  </span><br><span class="line"><span class="comment">//4.设置富文本</span></span><br><span class="line"><span class="keyword">self</span>.attributedLabel.attributedString <span class="operator">=</span> [<span class="keyword">self</span> getAttributedStringWithHtml:<span class="keyword">self</span>.html];</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-显示图片"><a href="#2-显示图片" class="headerlink" title="2.显示图片"></a>2.显示图片</h5><p>既然是富文本，<code>DTAttributedLabel</code>也会显示图片。但是如果我们的<code>Html</code>字符串里图片链接没有包含大小，图片并不能正常显示。为了显示图片我们需要懒加载获取宽高再刷新显示，这就需要用到<code>DTAttributedLabel</code>的代理方法如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark <span class="operator">-</span> <span class="type">Delegate：DTAttributedTextContentViewDelegate</span></span><br><span class="line"><span class="comment">//DTCoretText在解析Html的时候，如果遇到网络图片会插入一个占位符</span></span><br><span class="line"><span class="comment">//对于图片类型(DTImageTextAttachmentd)的占位符，我们使用DTLazyImageView来显示</span></span><br><span class="line"><span class="operator">-</span> (<span class="type">UIView</span> <span class="operator">*</span>)attributedTextContentView:(<span class="type">DTAttributedTextContentView</span> <span class="operator">*</span>)attributedTextContentView viewForAttachment:(<span class="type">DTTextAttachment</span> <span class="operator">*</span>)attachment frame:(<span class="type">CGRect</span>)frame&#123;</span><br><span class="line">    <span class="keyword">if</span>([attachment isKindOfClass:[<span class="type">DTImageTextAttachment</span> <span class="keyword">class</span>]])&#123;</span><br><span class="line">        <span class="type">NSString</span> <span class="operator">*</span>imageURL <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;%@&quot;</span>, attachment.contentURL];</span><br><span class="line">        <span class="type">DTLazyImageView</span> <span class="operator">*</span>imageView <span class="operator">=</span> [[<span class="type">DTLazyImageView</span> alloc] initWithFrame:frame];</span><br><span class="line">        imageView.delegate <span class="operator">=</span> <span class="keyword">self</span>;<span class="comment">//图片懒加载代理</span></span><br><span class="line">        imageView.contentMode <span class="operator">=</span> <span class="type">UIViewContentModeScaleAspectFit</span>;</span><br><span class="line">        imageView.image <span class="operator">=</span> [(<span class="type">DTImageTextAttachment</span> <span class="operator">*</span>)attachment image];</span><br><span class="line">        imageView.url <span class="operator">=</span> attachment.contentURL;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//处理gif图片</span></span><br><span class="line">        <span class="keyword">if</span> ([imageURL containsString:@<span class="string">&quot;gif&quot;</span>]) &#123;</span><br><span class="line">           dispatch_async(dispatch_get_global_queue(<span class="type">DISPATCH_QUEUE_PRIORITY_DEFAULT</span>, <span class="number">0</span>), <span class="operator">^</span>&#123;</span><br><span class="line">                <span class="type">NSData</span> <span class="operator">*</span>gifData <span class="operator">=</span> [<span class="type">NSData</span> dataWithContentsOfURL:attachment.contentURL];</span><br><span class="line">                dispatch_async(dispatch_get_main_queue(), <span class="operator">^</span>&#123;</span><br><span class="line">                    imageView.image <span class="operator">=</span> <span class="type">DTAnimatedGIFFromData</span>(gifData);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> imageView;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark  <span class="type">Delegate：DTLazyImageViewDelegate</span></span><br><span class="line"><span class="comment">//懒加载图片代理</span></span><br><span class="line"><span class="operator">-</span> (void)lazyImageView:(<span class="type">DTLazyImageView</span> <span class="operator">*</span>)lazyImageView didChangeImageSize:(<span class="type">CGSize</span>)size &#123;</span><br><span class="line">    <span class="type">NSURL</span> <span class="operator">*</span>url <span class="operator">=</span> lazyImageView.url;</span><br><span class="line">    <span class="type">CGSize</span> imageSize <span class="operator">=</span> size;</span><br><span class="line">    <span class="type">NSPredicate</span> <span class="operator">*</span>pred <span class="operator">=</span> [<span class="type">NSPredicate</span> predicateWithFormat:@<span class="string">&quot;contentURL == %@&quot;</span>, url];</span><br><span class="line">    <span class="type">BOOL</span> didUpdate <span class="operator">=</span> <span class="type">NO</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//update all attachments that match this URL (possibly multiple images with same size)</span></span><br><span class="line">    <span class="comment">//更新所有匹配URL的占位符视图 </span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">DTTextAttachment</span> <span class="operator">*</span>oneAttachment <span class="keyword">in</span> [<span class="keyword">self</span>.attributedLabel.layoutFrame textAttachmentsWithPredicate:pred])&#123;</span><br><span class="line">        <span class="comment">//update attachments that have no original size, that also sets the display size</span></span><br><span class="line">        <span class="comment">//更新没有自带尺寸的占位视图(如网络图片) </span></span><br><span class="line">        <span class="keyword">if</span> (<span class="type">CGSizeEqualToSize</span>(oneAttachment.originalSize, <span class="type">CGSizeZero</span>))&#123;</span><br><span class="line">            <span class="comment">//原始图片不带宽高，被识别后修改Html</span></span><br><span class="line">            oneAttachment.originalSize <span class="operator">=</span> imageSize;</span><br><span class="line">          <span class="comment">//使用新拿到的图片尺寸更新HTML字符串 </span></span><br><span class="line">            [<span class="keyword">self</span> configNoSizeImageView:url.absoluteString size:imageSize];</span><br><span class="line">            didUpdate <span class="operator">=</span> <span class="type">YES</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (didUpdate)&#123;    </span><br><span class="line">        <span class="comment">//重新显示富文本</span></span><br><span class="line">        <span class="type">CGSize</span> textSize <span class="operator">=</span> [<span class="keyword">self</span> getAttributedTextHeightHtml:<span class="keyword">self</span>.html with_viewMaxRect:_viewMaxRect];</span><br><span class="line">        <span class="keyword">self</span>.attributedLabel.frame <span class="operator">=</span> <span class="type">CGRectMake</span>(_viewMaxRect.origin.x, _viewMaxRect.origin.y, _viewMaxRect.size.width, textSize.height);</span><br><span class="line">        <span class="keyword">self</span>.attributedLabel.attributedString <span class="operator">=</span> [<span class="keyword">self</span> getAttributedStringWithHtml:<span class="keyword">self</span>.html];</span><br><span class="line">        <span class="keyword">self</span>.attributedLabel.layouter <span class="operator">=</span> <span class="literal">nil</span>;</span><br><span class="line">        [<span class="keyword">self</span>.attributedLabel relayoutText];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark <span class="operator">-</span> <span class="keyword">private</span> <span class="type">Methods</span></span><br><span class="line"><span class="comment">//使用得到的新图片尺寸，更新HtmlString字符串</span></span><br><span class="line"><span class="operator">-</span> (void)configNoSizeImageView:(<span class="type">NSString</span> <span class="operator">*</span>)url size:(<span class="type">CGSize</span>)size&#123;</span><br><span class="line">    <span class="comment">//_viewMaxRect是预设的最大Frame</span></span><br><span class="line">    <span class="type">CGFloat</span> imgSizeScale <span class="operator">=</span> size.height<span class="operator">/</span>size.width;</span><br><span class="line">    <span class="type">CGFloat</span> widthPx <span class="operator">=</span> _viewMaxRect.size.width;</span><br><span class="line">    <span class="type">CGFloat</span> heightPx <span class="operator">=</span> widthPx <span class="operator">*</span> imgSizeScale;</span><br><span class="line">    <span class="type">NSString</span> <span class="operator">*</span>imageInfo <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;_src=<span class="subst">\&quot;</span>%@<span class="subst">\&quot;</span>&quot;</span>,url];</span><br><span class="line">    <span class="type">NSString</span> <span class="operator">*</span>sizeString <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;style=<span class="subst">\&quot;</span>width:%.fpx; height:%.fpx;<span class="subst">\&quot;</span>&quot;</span>,widthPx,heightPx];</span><br><span class="line">    <span class="type">NSString</span> <span class="operator">*</span>newImageInfo <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;_src=<span class="subst">\&quot;</span>%@<span class="subst">\&quot;</span>%@&quot;</span>,url,sizeString];</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span>.html containsString:imageInfo]) &#123;</span><br><span class="line">        <span class="type">NSString</span> <span class="operator">*</span>newHtml <span class="operator">=</span> [<span class="keyword">self</span>.html stringByReplacingOccurrencesOfString:imageInfo withString:newImageInfo];</span><br><span class="line">        <span class="keyword">self</span>.html <span class="operator">=</span> newHtml;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用HtmlString,和预设的Frame，计算富文本视图自适应后的高度</span></span><br><span class="line"><span class="operator">-</span> (<span class="type">CGSize</span>)getAttributedTextHeightHtml:(<span class="type">NSString</span> <span class="operator">*</span>)htmlString with_viewMaxRect:(<span class="type">CGRect</span>)_viewMaxRect&#123;</span><br><span class="line">    <span class="comment">//获取富文本</span></span><br><span class="line">    <span class="type">NSAttributedString</span> <span class="operator">*</span>attributedString <span class="operator">=</span>  [<span class="keyword">self</span> getAttributedStringWithHtml:htmlString];</span><br><span class="line">    <span class="comment">//获取布局器</span></span><br><span class="line">    <span class="type">DTCoreTextLayouter</span> <span class="operator">*</span>layouter <span class="operator">=</span> [[<span class="type">DTCoreTextLayouter</span> alloc] initWithAttributedString:attributedString];</span><br><span class="line">    <span class="type">NSRange</span> entireString <span class="operator">=</span> <span class="type">NSMakeRange</span>(<span class="number">0</span>, [attributedString length]);</span><br><span class="line">    <span class="comment">//获取Frame</span></span><br><span class="line">    <span class="type">DTCoreTextLayoutFrame</span> <span class="operator">*</span>layoutFrame <span class="operator">=</span> [layouter layoutFrameWithRect:_viewMaxRect range:entireString];</span><br><span class="line">    <span class="comment">//得到大小</span></span><br><span class="line">    <span class="type">CGSize</span> sizeNeeded <span class="operator">=</span> [layoutFrame frame].size;</span><br><span class="line">    <span class="keyword">return</span> sizeNeeded;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="3-响应事件"><a href="#3-响应事件" class="headerlink" title="3.响应事件"></a>3.响应事件</h5><p>如果我们希望在<code>DTAttributedLabel</code>上操作点击事件，那么对应的我们也应该在<code>Html</code>中使用超链接<code>A</code>标签。这里我们需要用到如下的代理方法如下:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">-</span> (<span class="type">UIView</span> <span class="operator">*</span>)attributedTextContentView:(<span class="type">DTAttributedTextContentView</span> <span class="operator">*</span>)attributedTextContentView</span><br><span class="line">                          viewForLink:(<span class="type">NSURL</span> <span class="operator">*</span>)url</span><br><span class="line">                           identifier:(<span class="type">NSString</span> <span class="operator">*</span>)identifier</span><br><span class="line">                                frame:(<span class="type">CGRect</span>)frame&#123;</span><br><span class="line">    <span class="comment">//此方法需要我们在这里返回一个可以点击响应的控件如Button,然后就可以很方便的处理响应事件了，其中：</span></span><br><span class="line">    <span class="comment">//url:Html中的超链接(可以根据需要设置http、tel、mailto等)</span></span><br><span class="line">    <span class="comment">//identifier:属于该视图的唯一性标识</span></span><br><span class="line">    <span class="comment">//frame:超链接字符串所在的位置,需要将自定义响应按钮设置为此Frame</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：如果我们需要显示一些输入框之类的视图，也可以借助此方法。</strong></p>
+<p>最终效果图：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_DTAttributedLabel_result.png" width="375" align=center/></p>
+<h4 id="五、DTAttributedTextView"><a href="#五、DTAttributedTextView" class="headerlink" title="五、DTAttributedTextView"></a>五、DTAttributedTextView</h4><p>其实，<code>DTAttributedTextView</code>和<code>DTAttributedLabel</code>的用法几乎一样；</p>
+<p>从其源码上就能看出，<code>DTAttributedLabel</code>继承于<code>DTAttributedTextContentView</code>的，而<code>DTAttributedTextView</code>包含<code>DTAttributedTextContentView</code>属性。可以说<code>DTAttributedTextView</code>就是借助<code>DTAttributedLabel</code>实现的视图。</p>
+<p><code>DTAttributedTextView</code>是支持滑动显示的富文本视图，在使用时计算富文本的<code>Frame</code>也就没那么必要了，一般我们都会指定它的<code>Frame</code>，其在这里的用法就不累述了。</p>
+<h4 id="六、DTAttributedTextCell"><a href="#六、DTAttributedTextCell" class="headerlink" title="六、DTAttributedTextCell"></a>六、DTAttributedTextCell</h4><p>如果我们需要在单元格上显示富文本，<code>DTCoretText</code>也为我们提供了特有的类来解决这个问题，那就是<code>DTAttributedTextCell</code>。通过这个单元格类，我们可以方便的设置富文本以及获取单元格高度。以下是使用<code>DTAttributedTextCell</code>显示富文本的核心代码：</p>
+<h5 id="1-声明控制器内属性"><a href="#1-声明控制器内属性" class="headerlink" title="1. 声明控制器内属性"></a>1. 声明控制器内属性</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface</span> <span class="type">TestTableViewController</span> ()<span class="operator">&lt;</span><span class="type">UITableViewDataSource</span>,<span class="type">UITableViewDelegate</span>,<span class="type">DTAttributedTextContentViewDelegate</span>,<span class="type">DTLazyImageViewDelegate</span><span class="operator">&gt;</span></span><br><span class="line"><span class="meta">@property</span>(nonatomic,strong)<span class="type">UITableView</span> <span class="operator">*</span>tableView;</span><br><span class="line"><span class="comment">//普通单元格与富文本单元格</span></span><br><span class="line"><span class="meta">@property</span> (nonatomic, <span class="keyword">copy</span>) <span class="type">NSString</span> <span class="operator">*</span>cellID_Normal;</span><br><span class="line"><span class="meta">@property</span> (nonatomic, <span class="keyword">copy</span>) <span class="type">NSString</span> <span class="operator">*</span>cellID_DTCoreText;</span><br><span class="line"><span class="comment">//类似tabelView的缓冲池，用于存放图片大小</span></span><br><span class="line"><span class="meta">@property</span> (nonatomic, strong) <span class="type">NSCache</span> <span class="operator">*</span>imageSizeCache;</span><br><span class="line"><span class="meta">@property</span> (nonatomic,strong)<span class="type">NSCache</span> <span class="operator">*</span>cellCache;</span><br><span class="line"><span class="comment">//表视图数据源</span></span><br><span class="line"><span class="meta">@property</span> (nonatomic, strong) <span class="type">NSArray</span>  <span class="operator">*</span>dataSource;</span><br><span class="line"><span class="comment">//当前表视图是否在滑动</span></span><br><span class="line"><span class="meta">@property</span> (nonatomic,assign)<span class="type">BOOL</span> isScrolling;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="2-表视图代理方法返回单元格及其高度"><a href="#2-表视图代理方法返回单元格及其高度" class="headerlink" title="2.表视图代理方法返回单元格及其高度"></a>2.表视图代理方法返回单元格及其高度</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代理方法：返回单元格</span></span><br><span class="line"><span class="operator">-</span> (<span class="type">UITableViewCell</span> <span class="operator">*</span>)tableView:(<span class="type">UITableView</span> <span class="operator">*</span>)tableView cellForRowAtIndexPath:(<span class="type">NSIndexPath</span> <span class="operator">*</span>)indexPath&#123;</span><br><span class="line">    <span class="keyword">switch</span> (indexPath.section) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:&#123;</span><br><span class="line">            <span class="comment">//普通单元格</span></span><br><span class="line">            <span class="type">UITableViewCell</span> <span class="operator">*</span>cell <span class="operator">=</span> [tableView dequeueReusableCellWithIdentifier:_cellID_Normal];</span><br><span class="line">            cell.textLabel.text <span class="operator">=</span> <span class="keyword">self</span>.dataSource[indexPath.section][indexPath.row];</span><br><span class="line">            <span class="keyword">return</span> cell;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:&#123;</span><br><span class="line">            <span class="comment">//自定义方法，创建富文本类型的单元格</span></span><br><span class="line">            <span class="type">ZSDTCoreTextCell</span> <span class="operator">*</span>dtCell <span class="operator">=</span> (<span class="type">ZSDTCoreTextCell</span> <span class="operator">*</span>) [<span class="keyword">self</span> tableView:tableView prepareCellForIndexPath:indexPath];</span><br><span class="line">            <span class="keyword">return</span> dtCell;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回单元格高度</span></span><br><span class="line"><span class="operator">-</span> (<span class="type">CGFloat</span>)tableView:(<span class="type">UITableView</span> <span class="operator">*</span>)tableView heightForRowAtIndexPath:(nonnull <span class="type">NSIndexPath</span> <span class="operator">*</span>)indexPath&#123;</span><br><span class="line">    <span class="keyword">switch</span> (indexPath.section) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">50</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:&#123;</span><br><span class="line">          <span class="comment">//返回富文本类型单元格的方法</span></span><br><span class="line">            <span class="type">ZSDTCoreTextCell</span> <span class="operator">*</span>cell <span class="operator">=</span> (<span class="type">ZSDTCoreTextCell</span> <span class="operator">*</span>)[<span class="keyword">self</span> tableView:tableView prepareCellForIndexPath:indexPath];</span><br><span class="line">            <span class="keyword">return</span> [cell requiredRowHeightInTableView:tableView];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-懒加载处理无宽高属性的图片"><a href="#3-懒加载处理无宽高属性的图片" class="headerlink" title="3.懒加载处理无宽高属性的图片"></a>3.懒加载处理无宽高属性的图片</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark <span class="operator">-</span> <span class="type">DTAttributedTextContentViewDelegate</span></span><br><span class="line"><span class="comment">//对于没有在Html标签里设置宽高的图片，在这里为其设置占位</span></span><br><span class="line"><span class="operator">-</span> (<span class="type">UIView</span> <span class="operator">*</span>)attributedTextContentView:(<span class="type">DTAttributedTextContentView</span> <span class="operator">*</span>)attributedTextContentView viewForAttachment:(<span class="type">DTTextAttachment</span> <span class="operator">*</span>)attachment frame:(<span class="type">CGRect</span>)frame&#123;</span><br><span class="line">    <span class="keyword">if</span>([attachment isKindOfClass:[<span class="type">DTImageTextAttachment</span> <span class="keyword">class</span>]])&#123;</span><br><span class="line">        <span class="comment">//自定义的ZSDTLazyImageView继承于DTLazyImageView，增加了一个属性textContentView</span></span><br><span class="line">        <span class="comment">//用于更新图片大小</span></span><br><span class="line">        <span class="type">ZSDTLazyImageView</span> <span class="operator">*</span>imageView <span class="operator">=</span> [[<span class="type">ZSDTLazyImageView</span> alloc] initWithFrame:frame];</span><br><span class="line">        imageView.delegate <span class="operator">=</span> <span class="keyword">self</span>;</span><br><span class="line">        imageView.image <span class="operator">=</span> [(<span class="type">DTImageTextAttachment</span> <span class="operator">*</span>)attachment image];</span><br><span class="line">        imageView.textContentView <span class="operator">=</span> attributedTextContentView;</span><br><span class="line">        imageView.url <span class="operator">=</span> attachment.contentURL;</span><br><span class="line">        <span class="keyword">return</span> imageView;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//对于无宽高的图片懒加载，缓存记录其大小,然后执行表视图更新</span></span><br><span class="line"><span class="operator">-</span> (void)lazyImageView:(<span class="type">ZSDTLazyImageView</span> <span class="operator">*</span>)lazyImageView didChangeImageSize:(<span class="type">CGSize</span>)size&#123;</span><br><span class="line">    <span class="type">BOOL</span> needUpdate <span class="operator">=</span> <span class="type">NO</span>;</span><br><span class="line">    <span class="type">NSURL</span> <span class="operator">*</span>url <span class="operator">=</span> lazyImageView.url;</span><br><span class="line">    <span class="type">NSPredicate</span> <span class="operator">*</span>pred <span class="operator">=</span> [<span class="type">NSPredicate</span> predicateWithFormat:@<span class="string">&quot;contentURL == %@&quot;</span>, url];</span><br><span class="line">    <span class="comment">/* update all attachments that matchin this URL (possibly multiple</span></span><br><span class="line"><span class="comment">        images with same size)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">DTTextAttachment</span> <span class="operator">*</span>oneAttachment <span class="keyword">in</span> [lazyImageView.textContentView.layoutFrame textAttachmentsWithPredicate:pred])&#123;</span><br><span class="line">        <span class="comment">// update attachments that have no original size, that also sets the display size</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="type">CGSizeEqualToSize</span>(oneAttachment.originalSize, <span class="type">CGSizeZero</span>))&#123;</span><br><span class="line">            oneAttachment.originalSize <span class="operator">=</span> size;</span><br><span class="line">            <span class="type">NSValue</span> <span class="operator">*</span>sizeValue <span class="operator">=</span> [_imageSizeCache objectForKey:oneAttachment.contentURL];</span><br><span class="line">            <span class="keyword">if</span> (<span class="operator">!</span>sizeValue) &#123;</span><br><span class="line">                <span class="comment">//将图片大小记录在缓存中，但是这种图片的原始尺寸可能很大，所以这里设置图片的最大宽</span></span><br><span class="line">                <span class="comment">//并且计算高</span></span><br><span class="line">                <span class="type">CGFloat</span> aspectRatio <span class="operator">=</span> size.height <span class="operator">/</span> size.width;</span><br><span class="line">                <span class="type">CGFloat</span> width <span class="operator">=</span> <span class="type">ZSToolScreenWidth</span> <span class="operator">-</span> <span class="number">15</span><span class="operator">*</span><span class="number">2</span>;</span><br><span class="line">                <span class="type">CGFloat</span> height <span class="operator">=</span> width <span class="operator">*</span> aspectRatio;</span><br><span class="line">                <span class="type">CGSize</span> newSize <span class="operator">=</span> <span class="type">CGSizeMake</span>(width, height);</span><br><span class="line">                [_imageSizeCache setObject:[<span class="type">NSValue</span> valueWithCGSize:newSize]forKey:url];</span><br><span class="line">            &#125;</span><br><span class="line">            needUpdate <span class="operator">=</span> <span class="type">YES</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (needUpdate)&#123;</span><br><span class="line">        <span class="comment">//有新的图片尺寸被缓存记录的时候，需要刷新表视图</span></span><br><span class="line">        [<span class="keyword">self</span> reloadCurrentCell];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-创建富文本单元格的方法"><a href="#4-创建富文本单元格的方法" class="headerlink" title="4.创建富文本单元格的方法"></a>4.创建富文本单元格的方法</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark <span class="operator">-</span> <span class="keyword">private</span> <span class="type">Methods</span></span><br><span class="line"><span class="comment">//创建富文本单元格，并更新单元格上的数据</span></span><br><span class="line"><span class="comment">//ZSDTCoreTextCell是自定义的继承于DTCoreTextCell的单元格</span></span><br><span class="line"><span class="operator">-</span> (<span class="type">ZSDTCoreTextCell</span> <span class="operator">*</span>)tableView:(<span class="type">UITableView</span> <span class="operator">*</span>)tableView prepareCellForIndexPath:(<span class="type">NSIndexPath</span> <span class="operator">*</span>)indexPath&#123;</span><br><span class="line">    <span class="type">NSString</span> <span class="operator">*</span>key <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;dtCoreTextCellKEY%ld-%ld&quot;</span>, (long)indexPath.section, (long)indexPath.row];</span><br><span class="line">    <span class="type">ZSDTCoreTextCell</span> <span class="operator">*</span>cell <span class="operator">=</span> [_cellCache objectForKey:key];</span><br><span class="line">    <span class="keyword">if</span> (<span class="operator">!</span>cell)&#123;</span><br><span class="line">        cell <span class="operator">=</span> [[<span class="type">ZSDTCoreTextCell</span> alloc] initWithStyle:<span class="type">UITableViewCellStyleDefault</span> reuseIdentifier:_cellID_DTCoreText];</span><br><span class="line">        cell.attributedTextContextView.edgeInsets <span class="operator">=</span> <span class="type">UIEdgeInsetsMake</span>(<span class="number">0</span>, <span class="number">15</span>, <span class="number">0</span>, <span class="number">15</span>);</span><br><span class="line">        [cell setSelectionStyle:<span class="type">UITableViewCellSelectionStyleNone</span>];</span><br><span class="line">        cell.accessoryType <span class="operator">=</span> <span class="type">UITableViewCellAccessoryNone</span>;</span><br><span class="line">        cell.hasFixedRowHeight <span class="operator">=</span> <span class="type">NO</span>;</span><br><span class="line">        cell.textDelegate <span class="operator">=</span> <span class="keyword">self</span>;</span><br><span class="line">        cell.attributedTextContextView.shouldDrawImages <span class="operator">=</span> <span class="type">YES</span>;</span><br><span class="line">        <span class="comment">//记录在缓存中</span></span><br><span class="line">        [_cellCache setObject:cell forKey:key];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//2.设置数据</span></span><br><span class="line">    <span class="comment">//2.1为富文本单元格设置Html数据</span></span><br><span class="line">    [cell setHTMLString:<span class="keyword">self</span>.dataSource[indexPath.section][indexPath.row]];</span><br><span class="line">    <span class="comment">//2.2为每个占位图(图片)设置大小，并更新</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">DTTextAttachment</span> <span class="operator">*</span>oneAttachment <span class="keyword">in</span> cell.attributedTextContextView.layoutFrame.textAttachments) &#123;</span><br><span class="line">        <span class="type">NSValue</span> <span class="operator">*</span>sizeValue <span class="operator">=</span> [_imageSizeCache objectForKey:oneAttachment.contentURL];</span><br><span class="line">        <span class="keyword">if</span> (sizeValue) &#123;</span><br><span class="line">            cell.attributedTextContextView.layouter<span class="operator">=</span><span class="literal">nil</span>;</span><br><span class="line">            oneAttachment.displaySize <span class="operator">=</span> [sizeValue <span class="type">CGSizeValue</span>];</span><br><span class="line">            [cell.attributedTextContextView relayoutText];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    [cell.attributedTextContextView relayoutText];</span><br><span class="line">    <span class="keyword">return</span> cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-处理表视图的刷新"><a href="#5-处理表视图的刷新" class="headerlink" title="5.处理表视图的刷新"></a>5.处理表视图的刷新</h5><p>如果当前表视图在滑动就不执行刷新，因为滑动时候会自动调用表视图的刷新方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">-</span> (void)reloadCurrentCell&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.isScrolling) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果当前表视图没有在滑动，就手动刷新当前在屏幕显示的单元格</span></span><br><span class="line">    <span class="type">NSArray</span> <span class="operator">*</span>indexPaths <span class="operator">=</span> [<span class="keyword">self</span>.tableView indexPathsForVisibleRows];</span><br><span class="line">    <span class="keyword">if</span>(indexPaths)&#123;</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), <span class="operator">^</span>&#123;</span><br><span class="line">            [<span class="keyword">self</span>.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:<span class="type">UITableViewRowAnimationNone</span>];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="operator">-</span> (void)scrollViewDidEndScrollingAnimation:(<span class="type">UIScrollView</span> <span class="operator">*</span>)scrollView&#123;</span><br><span class="line">    _isScrolling <span class="operator">=</span> <span class="type">NO</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="operator">-</span> (void)scrollViewDidScroll:(<span class="type">UIScrollView</span> <span class="operator">*</span>)scrollView&#123;</span><br><span class="line">    _isScrolling <span class="operator">=</span> <span class="type">YES</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-set方法创建表视图与数据源"><a href="#6-set方法创建表视图与数据源" class="headerlink" title="6.set方法创建表视图与数据源"></a>6.set方法创建表视图与数据源</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark <span class="operator">-</span> <span class="keyword">set</span><span class="operator">/</span><span class="keyword">get</span>方法</span><br><span class="line"><span class="operator">-</span> (<span class="type">UITableView</span> <span class="operator">*</span>)tableView&#123;</span><br><span class="line">    <span class="keyword">if</span> (_tableView <span class="operator">==</span> <span class="literal">nil</span>) &#123;</span><br><span class="line">        _tableView <span class="operator">=</span> [[<span class="type">UITableView</span>  alloc] initWithFrame:<span class="type">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="type">ZSToolScreenWidth</span>, <span class="type">ZSToolScreenHeight</span><span class="operator">-</span><span class="number">64</span>) style:<span class="type">UITableViewStylePlain</span>];</span><br><span class="line">        _tableView.dataSource <span class="operator">=</span> <span class="keyword">self</span>;</span><br><span class="line">        _tableView.delegate <span class="operator">=</span> <span class="keyword">self</span>;</span><br><span class="line">        [_tableView registerClass:[<span class="type">UITableViewCell</span> <span class="keyword">class</span>] forCellReuseIdentifier:_cellID_Normal];</span><br><span class="line">        <span class="comment">//[_tableView registerClass:[ZSDTCoreTextCell class] forCellReuseIdentifier:_cellID_DTCoreText];</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _tableView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="operator">-</span> (<span class="type">NSArray</span> <span class="operator">*</span>)dataSource&#123;</span><br><span class="line">    <span class="keyword">if</span>(_dataSource <span class="operator">==</span> <span class="literal">nil</span>)&#123;</span><br><span class="line">        <span class="type">NSMutableArray</span> <span class="operator">*</span>noramDataArray <span class="operator">=</span> @[].mutableCopy;</span><br><span class="line">        <span class="type">NSMutableArray</span> <span class="operator">*</span>htmlDataArray <span class="operator">=</span> @[].mutableCopy;</span><br><span class="line">        <span class="type">NSArray</span> <span class="operator">*</span>images <span class="operator">=</span> @[@<span class="string">&quot;https://i0.hdslb.com/bfs/archive/d5ad3cf95d32f3d2f2e3471a39120237200d84d8.jpg&quot;</span>,</span><br><span class="line">                           @<span class="string">&quot;https://i0.hdslb.com/bfs/archive/71d2fed927d9351e759f408ca7d66c556c37a6b4.jpg&quot;</span>,</span><br><span class="line">                           @<span class="string">&quot;https://i0.hdslb.com/bfs/archive/7f520b31b67cd5d89dd30b61b40711327bb00288.png&quot;</span>,</span><br><span class="line">                           @<span class="string">&quot;https://i0.hdslb.com/bfs/archive/6edbe81bf74c106087ad139aca169d6e8d9d963b.jpg&quot;</span>,</span><br><span class="line">                           @<span class="string">&quot;https://i0.hdslb.com/bfs/archive/805aa8f7ae722fcc277f425bb9927e29ec1d2468.jpg&quot;</span>,</span><br><span class="line">                           @<span class="string">&quot;https://i0.hdslb.com/bfs/archive/a7c61d94c583363a970d2a2e339eea97f8f32317.jpg&quot;</span>,</span><br><span class="line">                           @<span class="string">&quot;https://i0.hdslb.com/bfs/archive/b447ee1fd63b4cf6f4465a5621cc12898867d26b.jpg&quot;</span>];</span><br><span class="line">        <span class="keyword">for</span>(int i <span class="operator">=</span> <span class="number">0</span>;i<span class="operator">&lt;</span><span class="number">1000</span>;i<span class="operator">++</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i <span class="operator">&lt;</span><span class="number">6</span>)&#123;</span><br><span class="line">                [noramDataArray addObject:[<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;测试普通单元格:%d&quot;</span>,i]];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//这里提供的Html图片链接，没有宽高属性，代码中已经演示了如何处理</span></span><br><span class="line">            int k <span class="operator">=</span> i <span class="operator">%</span> <span class="number">6</span>;</span><br><span class="line">            <span class="type">NSString</span> <span class="operator">*</span>htmlString <span class="operator">=</span>[<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;&lt;span style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;&lt;strong&gt;测试富文本单元格%d：&lt;/strong&gt;&lt;/span&gt;&lt;br/&gt;&lt;span style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;记住！砍价是由你自己先砍，砍不动时再由砍价师继续砍；由砍价师多砍下的部分，才按照下列标准收费：&lt;/span&gt;&lt;br/&gt;&lt;span style=<span class="subst">\&quot;</span>color:#333;font-size:15px;<span class="subst">\&quot;</span>&gt;&lt;img src=%@ _src=%@&gt;&lt;/span&gt;&quot;</span>,i,images[k],images[k]];</span><br><span class="line">            [htmlDataArray addObject:htmlString];</span><br><span class="line">        &#125;</span><br><span class="line">        _dataSource <span class="operator">=</span> @[noramDataArray,htmlDataArray];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _dataSource;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>DTAttributedTextCell</code>的最终效果图如下：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_DTAttributedTextCell_result.png" width="375" align=center/></p>
+<h4 id="七、可能遇到的错误"><a href="#七、可能遇到的错误" class="headerlink" title="七、可能遇到的错误"></a>七、可能遇到的错误</h4><p>原本上，在项目中使用只需将<code>Release-iphones</code>的<code>DTCoreText.framework</code>和<code>DTFoundation.framework</code>中拖入工程就可以使用了。</p>
+<p>然而，我在编译工程却会遇到这样一个错误：<code>&quot;image not found&quot;</code></p>
+<p>解决方法如下图：<br><img src="https://cdn.jsdelivr.net/gh/wuyubeichen/cdn-resources/blog/dtcoretext_image_not_found.png" width="100%" align=center/></p>
+
+    </div>
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Zhou Shuai
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wuyubeichen.github.io/post/3034066139.html" title="iOS开发-DTCoreText的集成与使用">https://wuyubeichen.github.io/post/3034066139.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/DTCoreText/" rel="tag"># DTCoreText</a>
+              <a href="/tags/UI%E9%97%AE%E9%A2%98/" rel="tag"># UI问题</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/3233251782.html" rel="prev" title="iOS开发-屏幕旋转适配">
+      <i class="fa fa-chevron-left"></i> iOS开发-屏幕旋转适配
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/1431058323.html" rel="next" title="iOS开发-ReactiveCocoa应用篇">
+      iOS开发-ReactiveCocoa应用篇 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81DTCoreText%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、DTCoreText简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81DTCoreText%E7%9A%84%E9%9B%86%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">二、DTCoreText的集成</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">1.下载源码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%AE%BE%E7%BD%AE%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">2.设置编译配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E8%AE%BE%E7%BD%AEScheme"><span class="nav-number">2.3.</span> <span class="nav-text">3.设置Scheme</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%92%8C%E7%9C%9F%E6%9C%BA%E5%88%86%E5%88%AB%E7%BC%96%E8%AF%91"><span class="nav-number">2.4.</span> <span class="nav-text">4.模拟器和真机分别编译</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E6%89%93%E5%BC%80%E7%BC%96%E8%AF%91%E7%BC%93%E5%AD%98%EF%BC%8C%E8%8E%B7%E5%8F%96%E9%9D%99%E6%80%81%E5%BA%93"><span class="nav-number">2.5.</span> <span class="nav-text">5.打开编译缓存，获取静态库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-%E5%90%88%E5%B9%B6%E9%9D%99%E6%80%81%E5%BA%93"><span class="nav-number">2.6.</span> <span class="nav-text">6.合并静态库</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81DTCoreText%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">三、DTCoreText的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BD%BF%E7%94%A8DTAttributedLabel"><span class="nav-number">4.</span> <span class="nav-text">四、使用DTAttributedLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%98%BE%E7%A4%BA%E5%9F%BA%E6%9C%AC%E6%96%87%E6%9C%AC"><span class="nav-number">4.1.</span> <span class="nav-text">1.显示基本文本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%98%BE%E7%A4%BA%E5%9B%BE%E7%89%87"><span class="nav-number">4.2.</span> <span class="nav-text">2.显示图片</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%93%8D%E5%BA%94%E4%BA%8B%E4%BB%B6"><span class="nav-number">4.3.</span> <span class="nav-text">3.响应事件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94%E3%80%81DTAttributedTextView"><span class="nav-number">5.</span> <span class="nav-text">五、DTAttributedTextView</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AD%E3%80%81DTAttributedTextCell"><span class="nav-number">6.</span> <span class="nav-text">六、DTAttributedTextCell</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%A3%B0%E6%98%8E%E6%8E%A7%E5%88%B6%E5%99%A8%E5%86%85%E5%B1%9E%E6%80%A7"><span class="nav-number">6.1.</span> <span class="nav-text">1. 声明控制器内属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%A1%A8%E8%A7%86%E5%9B%BE%E4%BB%A3%E7%90%86%E6%96%B9%E6%B3%95%E8%BF%94%E5%9B%9E%E5%8D%95%E5%85%83%E6%A0%BC%E5%8F%8A%E5%85%B6%E9%AB%98%E5%BA%A6"><span class="nav-number">6.2.</span> <span class="nav-text">2.表视图代理方法返回单元格及其高度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%87%92%E5%8A%A0%E8%BD%BD%E5%A4%84%E7%90%86%E6%97%A0%E5%AE%BD%E9%AB%98%E5%B1%9E%E6%80%A7%E7%9A%84%E5%9B%BE%E7%89%87"><span class="nav-number">6.3.</span> <span class="nav-text">3.懒加载处理无宽高属性的图片</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E5%88%9B%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E5%8D%95%E5%85%83%E6%A0%BC%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">6.4.</span> <span class="nav-text">4.创建富文本单元格的方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E5%A4%84%E7%90%86%E8%A1%A8%E8%A7%86%E5%9B%BE%E7%9A%84%E5%88%B7%E6%96%B0"><span class="nav-number">6.5.</span> <span class="nav-text">5.处理表视图的刷新</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-set%E6%96%B9%E6%B3%95%E5%88%9B%E5%BB%BA%E8%A1%A8%E8%A7%86%E5%9B%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-number">6.6.</span> <span class="nav-text">6.set方法创建表视图与数据源</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-number">7.</span> <span class="nav-text">七、可能遇到的错误</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhou Shuai"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Zhou Shuai</p>
+  <div class="site-description" itemprop="description">iOS Developer, Beijing China</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuyubeichen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wuyubeichen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/DreamcoffeeZS" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;DreamcoffeeZS" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/8451823772526" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;8451823772526" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/32a54fe899ef" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;32a54fe899ef" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>简书</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhou Shuai</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">249k</span>
+</div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共97.1k字</span>
+</div>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2e6fa2ad89748dbf4116',
+      clientSecret: 'f9c89ddcbf94ec2d51bf77a2741a883278b6c9e9',
+      repo        : 'wuyubeichen.github.io',
+      owner       : 'wuyubeichen',
+      admin       : ['wuyubeichen'],
+      id          : 'd953b4e3ed47bda38deaa5cca3982465',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
